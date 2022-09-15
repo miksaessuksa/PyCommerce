@@ -363,11 +363,12 @@ elif rad == "Explorative Data Analysis":
              y = [c for c in plotdata.columns],
              
              color_discrete_sequence = colors,
-             title = '**Ratings count per year**', 
+             
              )
         fig.update_xaxes(title="Star")
         fig.update_yaxes(title="Count")
         fig.update_layout(legend_title_text='Year') 
+        st.markdown('##### Ratings count per year')
         st.plotly_chart(fig)
     
         def reviews_per_month(month):
@@ -412,11 +413,11 @@ elif rad == "Explorative Data Analysis":
              x = index,
              y = [c for c in plotdata_month.columns],
              color_discrete_sequence = colors,
-             title = '**Ratings count per month**', 
-             )
+                         )
         fig.update_xaxes(title="Star")
         fig.update_yaxes(title="Count")
         fig.update_layout(legend_title_text='Month') 
+        st.markdown('##### Ratings count per month')
         st.plotly_chart(fig)
     
         def reviews_per_quarter(quarter):
@@ -447,11 +448,11 @@ elif rad == "Explorative Data Analysis":
                  y = [c for c in plotdata_quarter.columns],
                  
                  color_discrete_sequence = colors,
-                 title = '**Ratings distribution per quarter**', 
-                 )
+                                  )
         fig.update_xaxes(title="Star")
         fig.update_yaxes(title="Count")
-        fig.update_layout(legend_title_text='Quarter') 
+        fig.update_layout(legend_title_text='Quarter')
+        st.markdown('##### Ratings count per quarter')
         st.plotly_chart(fig,use_container_width=True)
         
         st.markdown("The count of 1 star reviews is quite homogenous all along the year while the rest of the reviews have been mainly recorded during the summer : June, July, August (Fig. ).  \n"  
