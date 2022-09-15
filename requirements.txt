@@ -3,6 +3,7 @@ numpy
 matplotlib
 seaborn
 io
+plotly
 plotly.express
 re
 datetime
