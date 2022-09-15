@@ -4,4 +4,4 @@ matplotlib
 seaborn
 plotly
 datetime
-base64
+
