@@ -3,7 +3,6 @@ numpy
 matplotlib
 seaborn
 plotly
-plotly.express
 re
 datetime
 base64
