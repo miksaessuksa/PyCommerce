@@ -121,7 +121,8 @@ elif rad == "Explorative Data Analysis":
     top_lang=lang.head(10).replace(['fr','it','pt','lv','es','en','ro','ca','sk','de'],['French','Italian','Portuguese','Latvian','Spanish','English','Romanian','Catalan','Slovak','German'])
     
 #Plotting Teemap of the top 10 languages
-    fig = px.treemap(top_lang, path=['Langue'], values='counts',color='Langue', color_discrete_map={"French": "#4628dd", "Italian": "#004cf2","Portuguese": "#0065ff", "Spanish": "#0079ff","Latvian":"#008bff","English":"#009bff", "Catalan":"#00aaff","Romanian":"#00b7f7",  "Slovak":"#00c4ee", "German":"#00d1e6"}, title="**Top ten languages detected in the reviews**")
+    fig = px.treemap(top_lang, path=['Langue'], values='counts',color='Langue', color_discrete_map={"French": "#4628dd", "Italian": "#004cf2","Portuguese": "#0065ff", "Spanish": "#0079ff","Latvian":"#008bff","English":"#009bff", "Catalan":"#00aaff","Romanian":"#00b7f7",  "Slovak":"#00c4ee", "German":"#00d1e6"})
+    st.markdown('##### Top 10 languages detected in the reviews')
     st.plotly_chart(fig)
 #We keep only French identified reviews:
     df1_fr=df1.copy()
@@ -135,8 +136,9 @@ elif rad == "Explorative Data Analysis":
     st.markdown("Let's first have a look at the ratings distribution that will be our target variable:")
 #Pie chart
     reviews_count = df1_fr.groupby('star').count()['Commentaire'].reset_index().sort_values(by='Commentaire',ascending=False)
-    fig = px.pie(df1_fr, values=reviews_count.Commentaire, names=reviews_count.star, title='Star Rating Distribution')
+    fig = px.pie(df1_fr, values=reviews_count.Commentaire, names=reviews_count.star)
     fig.update_traces(textfont_size=14,textinfo='label+percent')
+    st.markdown('#####Star Rating distribution')
     st.plotly_chart(fig)
     st.markdown("The dataset is imbalanced with 1 and 5 star-rated reviews accounting for nearly 65% of the reviews")
    
