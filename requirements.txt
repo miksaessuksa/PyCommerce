@@ -1,0 +1,9 @@
+pandas
+numpy
+matplotlib.pyplot
+seaborn
+io
+plotly.express
+re
+datetime
+base64
