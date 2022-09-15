@@ -138,7 +138,7 @@ elif rad == "Explorative Data Analysis":
     reviews_count = df1_fr.groupby('star').count()['Commentaire'].reset_index().sort_values(by='Commentaire',ascending=False)
     fig = px.pie(df1_fr, values=reviews_count.Commentaire, names=reviews_count.star)
     fig.update_traces(textfont_size=14,textinfo='label+percent')
-    st.markdown('#####Star Rating distribution')
+    st.markdown('##### Star Rating distribution')
     st.plotly_chart(fig)
     st.markdown("The dataset is imbalanced with 1 and 5 star-rated reviews accounting for nearly 65% of the reviews")
    
