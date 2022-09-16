@@ -28,7 +28,7 @@ from sklearn.svm import SVC
 
 
 #Creation of a dataframe with with the data from the file "reviews_trust.csv":
-df=pd.read_csv('C:/Users/celin/Documents/cours/formation_DatascienTest_2022_bootcamp/projet_satisfaction_client/reviews_trust.csv', index_col=0)
+df=pd.read_csv('reviews_trust.csv', index_col=0)
 
 #Setting option to show max rows and max columns
 pd.set_option("display.max_columns",None)
@@ -52,7 +52,7 @@ def add_bg_from_local(image_file):
     """,
     unsafe_allow_html=True
     )
-add_bg_from_local('C:/Users/celin/Documents/cours/formation_DatascienTest_2022_bootcamp/projet_satisfaction_client/pycommerce_bg.jpg')
+add_bg_from_local('pycommerce_bg.jpg')
 
 
 #################PROJECT PRESENTATION
@@ -130,7 +130,7 @@ elif rad == "Explorative Data Analysis":
      
     st.markdown("> #### 1.3. Identification of existing Languages")
     #Load the reviews including the corresponding language detected:
-    df1=pd.read_csv('C:/Users/celin/Documents/cours/formation_DatascienTest_2022_bootcamp/projet_satisfaction_client/df_lang4.csv',index_col=0)
+    df1=pd.read_csv('df_lang4.csv',index_col=0)
     st.markdown("The dataset includes 32 different languages with Italian, Portuguese, Spanish and English among the top ten of foreign languages detected, with some languages being misidentified.  \n\n"
                 "Considering that most available NLP libraries and models  have been been trained on English, which makes practical use of such models in French quite limited, we will select only **French reviews** for further analysis. \n")
     lang=df1['langue'].value_counts().rename_axis('Langue').reset_index(name='counts')
@@ -527,7 +527,7 @@ elif rad == "Modeling":
     st.sidebar.markdown('Choose your model')
         #@st.cache(allow_output_mutation=True)
         #@st.cache(persist=True)
-    df=pd.read_csv('C:/Users/celin/Documents/cours/formation_DatascienTest_2022_bootcamp/projet_satisfaction_client/feats_minmaxscaled.csv', index_col=0)
+    df=pd.read_csv('feats_minmaxscaled.csv', index_col=0)
     to_keep=['spacy_lemmatized_j','rating','nb_words','negation','sentences_count',"company_ShowRoom","company_VeePee","source_TrustPilot","source_TrustedShop"]
     feats=df[to_keep]
     feats_train, feats_test, y_train, y_test = train_test_split(feats.drop(['rating'], axis=1), feats.rating, test_size=0.2, random_state=49)
@@ -649,7 +649,7 @@ elif rad == "Conclusion & Perspectives":
     if st.button('Click if you want to see the scoring metrics for all models tested'):
 
         #Display dataframe of all scores
-        df_all_scores=pd.read_csv('C:/Users/celin/Documents/cours/formation_DatascienTest_2022_bootcamp/projet_satisfaction_client/df_all_scores.csv', index_col=0)
+        df_all_scores=pd.read_csv('df_all_scores.csv', index_col=0)
         st.markdown("Performance results for all models")
         st.write(df_all_scores)
     #Visualization (barplot) of the scores obtained for the different models:
