@@ -11,9 +11,24 @@ import re
 import datetime as dt
 import base64
 
+import scikitplot as skplt
+from sklearn.metrics import roc_curve, auc
+from sklearn.metrics import precision_recall_curve
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.metrics import classification_report
+from sklearn.metrics import f1_score
+from sklearn.metrics import precision_score
+from sklearn.metrics import recall_score
+from sklearn.metrics import classification_report
+from catboost import CatBoostClassifier
+from sklearn.naive_bayes import BernoulliNB,MultinomialNB
+from sklearn.svm import SVC 
+
 
 #Creation of a dataframe with with the data from the file "reviews_trust.csv":
-df=pd.read_csv('reviews_trust.csv')
+df=pd.read_csv('C:/Users/celin/Documents/cours/formation_DatascienTest_2022_bootcamp/projet_satisfaction_client/reviews_trust.csv', index_col=0)
 
 #Setting option to show max rows and max columns
 pd.set_option("display.max_columns",None)
@@ -21,7 +36,7 @@ pd.set_option("display.max_rows", None)
 
 
 #Sidebar creation: 
-rad = st.sidebar.radio("Menu",["Project presentation", "Explorative Data Analysis", "Data processing", "Modeling", "Conclusion"])
+rad = st.sidebar.radio("Menu",["Project presentation", "Explorative Data Analysis", "Data processing", "Modeling", "Conclusion & Perspectives"])
 
 def add_bg_from_local(image_file):
     with open(image_file, "rb") as image_file:
@@ -37,10 +52,10 @@ def add_bg_from_local(image_file):
     """,
     unsafe_allow_html=True
     )
-add_bg_from_local('pycommerce_bg.jpg')
+add_bg_from_local('C:/Users/celin/Documents/cours/formation_DatascienTest_2022_bootcamp/projet_satisfaction_client/pycommerce_bg.jpg')
 
 
-
+#################PROJECT PRESENTATION
 if rad == "Project presentation":
     st.header("PyCommerce Project")
     st.subheader('Context')
@@ -51,15 +66,18 @@ if rad == "Project presentation":
     st.markdown("After analyzing customers' comments, our objective will be to categorize new product feedback using a **binary classification**")
     st.subheader('Steps')
     st.markdown("In order to reach our goal, we will divide our project in four steps, based on a data siences approach: ")
-    st.markdown("**Exploratory Data Analysis (EDA)**: a mandatory step to comprehend and understand our datase (descriptive data, correlation between variables, data cleaning, visualization graphs...) ")
-    st.markdown("**Data preprocessing**: NLP methods require to transform raw data (comments) in usable and workable data (tokenization, stemming, regular expression...).")
-    st.markdown("**Modeling**: training machine learning and deep learning models and interpreting results.")
-    st.markdown(" **Predictions**: test driving the model chosen upon selection criteria (interpretability & performances).")
+    st.markdown(">- **Exploratory Data Analysis (EDA)**: a mandatory step to comprehend and understand our datase (descriptive data, correlation between variables, data cleaning, visualization graphs...) ")
+    st.markdown(">- **Data preprocessing**: NLP methods require to transform raw data (comments) in usable and workable data (tokenization, stemming, regular expression...).")
+    st.markdown(">- **Modeling**: training machine learning and deep learning models and interpreting results.")
+    st.markdown(">- **Predictions**: test driving the model chosen upon selection criteria (interpretability & performances).")
 
+
+
+###############EDA
 elif rad == "Explorative Data Analysis":
-    st.header('## Explorative Data Analysis')
-    st.subheader('### 1.1. Data description and preparation')
-    st.subheader('>#### 1.1.1. Dataset discovery')
+    st.header('Explorative Data Analysis')
+    st.markdown('### 1. Data description and preparation')
+    st.markdown('> #### 1.1. Dataset discovery')
 
 
 #Visualize the first lines of the dataframe:
@@ -72,22 +90,23 @@ elif rad == "Explorative Data Analysis":
     info = buffer.getvalue()
     
     st.markdown ("The dataset includes 19,863 entries for 11 variables (2 are numerical, while the others are categorical) : \n"
-                 ">-**Commentaire**: feedback left by the customer  \n"
-                 ">-**star**: rating (1 to 5)  \n"
-                 ">-**date**: date of customer's feedback  \n"
-                 ">-**client**: lots of missing values (  %)  \n"
-                 ">-**reponse**: answer to customers'feedback, lots of missing values (%)  \n"
-                 ">-**source**: the reviews have been collected from TrustedShop and TrustPilot  \n"
-                 ">-**company**: the reviews refer to 2 e-commerce platforms (VeePee and ShowRoom)  \n"
-                 ">-**ville**: lots of missing values  \n"
-                 ">-**date_commande**: order date, lots of missing values  \n"
-                 ">-**ecart**: day interval between customer's order and feedback, lots of missing values  \n"
-                 ">-**maj**: delivery date  \n")
+                 ">- **Commentaire**: feedback left by the customer  \n"
+                 ">- **star**: rating (1 to 5)  \n"
+                 ">- **date**: date of customer's feedback  \n"
+                 ">- **client**: lots of missing values (  %)  \n"
+                 ">- **reponse**: answer to customers'feedback, lots of missing values (%)  \n"
+                 ">- **source**: the reviews have been collected from TrustedShop and TrustPilot  \n"
+                 ">- **company**: the reviews refer to 2 e-commerce platforms (VeePee and ShowRoom)  \n"
+                 ">- **ville**: lots of missing values  \n"
+                 ">- **date_commande**: order date, lots of missing values  \n"
+                 ">- **ecart**: day interval between customer's order and feedback, lots of missing values  \n"
+                 ">- **maj**: delivery date  \n")
     if st.button('Click if you want to read general information regarding the dataset'):
         st.text(info)                
 
 #CLEANING DUPLICATES AND NA
-    st.subheader(">#### 1.1.2. Cleaning of Duplicates & NaN")
+    st.markdown('> #### 1.2. Cleaning of Duplicates & NaN')
+    
     #Check for duplicates:
     nb_duplicates=df.duplicated().sum()
     st.markdown("The dataset includes 427 duplicates, that will be removed so as to only keep unique entries.  \n"
@@ -108,14 +127,14 @@ elif rad == "Explorative Data Analysis":
     #Delete the few rows with missing values:
     df1=df1.dropna()
     df1.reset_index(drop=True, inplace=True)
-      
-    st.subheader(">#### 1.1.3. Identification of existing Languages")
+     
+    st.markdown("> #### 1.3. Identification of existing Languages")
     #Load the reviews including the corresponding language detected:
-    df1=pd.read_csv('df_lang4.csv',index_col=0)
+    df1=pd.read_csv('C:/Users/celin/Documents/cours/formation_DatascienTest_2022_bootcamp/projet_satisfaction_client/df_lang4.csv',index_col=0)
     st.markdown("The dataset includes 32 different languages with Italian, Portuguese, Spanish and English among the top ten of foreign languages detected, with some languages being misidentified.  \n\n"
                 "Considering that most available NLP libraries and models  have been been trained on English, which makes practical use of such models in French quite limited, we will select only **French reviews** for further analysis. \n")
     lang=df1['langue'].value_counts().rename_axis('Langue').reset_index(name='counts')
-    if st.button('Click if you want to see the the count of all languages used in the dataset'):
+    if st.button('Click if you want to see the count of all languages used in the dataset'):
         st.write(lang)
 #selection of top ten languages
     top_lang=lang.head(10).replace(['fr','it','pt','lv','es','en','ro','ca','sk','de'],['French','Italian','Portuguese','Latvian','Spanish','English','Romanian','Catalan','Slovak','German'])
@@ -131,7 +150,7 @@ elif rad == "Explorative Data Analysis":
     df1_fr= df1_fr.drop('langue', axis=1)
 
 #DATA VISUALIZATION    
-    st.header("### 1.2 Data Visualization")
+    st.markdown("### 2. Data Visualization")
    #Ratings distribution
     st.markdown("Let's first have a look at the ratings distribution that will be our target variable:")
 #Pie chart
@@ -415,7 +434,8 @@ elif rad == "Explorative Data Analysis":
              x = index,
              y = [c for c in plotdata_month.columns],
              color_discrete_sequence = colors,
-                         )
+              
+             )
         fig.update_xaxes(title="Star")
         fig.update_yaxes(title="Count")
         fig.update_layout(legend_title_text='Month') 
@@ -450,10 +470,11 @@ elif rad == "Explorative Data Analysis":
                  y = [c for c in plotdata_quarter.columns],
                  
                  color_discrete_sequence = colors,
-                                  )
+            
+                 )
         fig.update_xaxes(title="Star")
         fig.update_yaxes(title="Count")
-        fig.update_layout(legend_title_text='Quarter')
+        fig.update_layout(legend_title_text='Quarter') 
         st.markdown('##### Ratings count per quarter')
         st.plotly_chart(fig,use_container_width=True)
         
@@ -477,7 +498,184 @@ elif rad == "Explorative Data Analysis":
     st.markdown('##### New Rating Distribution')
     st.plotly_chart(fig)
     
+###############EDA
+elif rad == "Modeling":    
+
     
+    #from nltk.corpus import stopwords
+    from sklearn.model_selection import train_test_split
+    from sklearn.ensemble import GradientBoostingClassifier
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.metrics import classification_report
+    from sklearn.metrics import f1_score
+    from sklearn.metrics import precision_score
+    from sklearn.metrics import recall_score
+    from sklearn.metrics import classification_report
+    from sklearn.metrics import confusion_matrix
+    from sklearn.metrics import plot_confusion_matrix, plot_roc_curve
+    from catboost import CatBoostClassifier
+    from sklearn.naive_bayes import BernoulliNB,MultinomialNB
+    from sklearn.svm import SVC
+    from scipy.sparse import hstack
+    from sklearn.metrics import precision_score, recall_score
+    import scikitplot as skplt
+    
+    # def main():
+    st.title('Predicting Sentiment Reviews')
+    st.sidebar.title('Model Selection Panel')
+    st.subheader('Results Analysis')
+    st.sidebar.markdown('Choose your model')
+        #@st.cache(allow_output_mutation=True)
+        #@st.cache(persist=True)
+    df=pd.read_csv('C:/Users/celin/Documents/cours/formation_DatascienTest_2022_bootcamp/projet_satisfaction_client/feats_minmaxscaled.csv', index_col=0)
+    to_keep=['spacy_lemmatized_j','rating','nb_words','negation','sentences_count',"company_ShowRoom","company_VeePee","source_TrustPilot","source_TrustedShop"]
+    feats=df[to_keep]
+    feats_train, feats_test, y_train, y_test = train_test_split(feats.drop(['rating'], axis=1), feats.rating, test_size=0.2, random_state=49)
+
+    vectorizer = TfidfVectorizer( max_features=10000, ngram_range=(1,2))
+
+    X_train_text = vectorizer.fit_transform(feats_train.spacy_lemmatized_j)
+    X_test_text = vectorizer.transform(feats_test.spacy_lemmatized_j)
+
+    X_train = hstack((X_train_text, feats_train.drop('spacy_lemmatized_j', axis=1).values))
+    X_test = hstack((X_test_text, feats_test.drop('spacy_lemmatized_j', axis=1).values))
+
+    class_names = ['Negative', 'Positive']
+        
+        
+    st.sidebar.subheader('Select your Classifier')
+    classifier = st.sidebar.selectbox('Classifier', ('Catboosting', 'Logistic Regression', 'Gradient Boosting', 'Gradient Boosting - Pipeline', 'Support Vector Machine', 'Support Vector Machine - Pipeline'))
+
+        
+    if classifier == 'Gradient Boosting':
+        metrics = st.sidebar.multiselect('Select your metrics?', ('Confusion Matrix', 'Precision-Recall Curve'))
+        st.sidebar.button('Classify', key='1')
+        st.subheader('Gradient Boosting Results')
+        model = GradientBoostingClassifier(n_estimators=100, learning_rate=1.0, max_depth=1, random_state=49)
+        model.fit(X_train, y_train)
+        accuracy = model.score(X_test, y_test)
+        y_pred = model.predict(X_test)
+        st.write('Accuracy: ', accuracy.round(2)*100,'%')
+        st.write('Precision: ', precision_score(y_test, y_pred, labels=class_names).round(2))
+        st.write('Recall: ', recall_score(y_test, y_pred, labels=class_names).round(2))
+        
+        if 'Confusion Matrix' in metrics:
+
+            confusion_matrix = confusion_matrix(y_test, y_pred)
+
+            fig, ax = plt.subplots(figsize=(3, 3))
+            ax.matshow(confusion_matrix, cmap=plt.cm.Blues, alpha=0.3)
+            for i in range(confusion_matrix.shape[0]):
+                for j in range(confusion_matrix.shape[1]):
+                    ax.text(x=j, y=i,s=confusion_matrix[i, j], va='center', ha='center', size='xx-large')
+            
+            plt.xlabel('Predictions', fontsize=10)
+            plt.ylabel('Actuals', fontsize=10)
+            plt.title('Confusion Matrix', fontsize=10)
+            st.pyplot(fig)
+
+        else:
+            y_score = model.predict_proba(X_test)[:, 1]
+            #calculate precision and recall
+            precision, recall, thresholds = precision_recall_curve(y_test, y_score)
+
+            #create precision recall curve
+            fig, ax = plt.subplots(figsize=(3, 3))
+            ax.plot(recall, precision, color='purple')
+
+            # add axis labels to plot
+            ax.set_title('Precision-Recall Curve')
+            ax.set_ylabel('Precision')
+            ax.set_xlabel('Recall')
+            st.pyplot(fig)
+
+    elif classifier == 'Logistic Regression':
+        st.sidebar.subheader('Model Parameters')
+        metrics = st.sidebar.multiselect('Select your metrics?', ('Confusion Matrix', 'Precision-Recall Curve'))
+        st.sidebar.button('Classify', key='2')
+        st.subheader('Logistic Regression Results')
+        model = LogisticRegression(class_weight='balanced', penalty='l2', solver='lbfgs',C=1)
+        model.fit(X_train, y_train)
+        accuracy = model.score(X_test, y_test)
+        y_pred = model.predict(X_test)
+        st.write('Accuracy: ', accuracy.round(2)*100,'%')
+        st.write('Precision: ', precision_score(y_test, y_pred, labels=class_names).round(2))
+        st.write('Recall: ', recall_score(y_test, y_pred, labels=class_names).round(2))
+
+        if 'Confusion Matrix' in metrics:
+
+            confusion_matrix = confusion_matrix(y_test, y_pred)
+
+            fig, ax = plt.subplots(figsize=(3, 3))
+            ax.matshow(confusion_matrix, cmap=plt.cm.Blues, alpha=0.3)
+            for i in range(confusion_matrix.shape[0]):
+                for j in range(confusion_matrix.shape[1]):
+                    ax.text(x=j, y=i,s=confusion_matrix[i, j], va='center', ha='center', size='xx-large')
+            
+            plt.xlabel('Predictions', fontsize=10)
+            plt.ylabel('Actuals', fontsize=10)
+            plt.title('Confusion Matrix', fontsize=10)
+            st.pyplot(fig)
+
+        else:
+            y_score = model.predict_proba(X_test)[:, 1]
+            #calculate precision and recall
+            precision, recall, thresholds = precision_recall_curve(y_test, y_score)
+
+            #create precision recall curve
+            fig, ax = plt.subplots(figsize=(3, 3))
+            ax.plot(recall, precision, color='purple')
+
+            # add axis labels to plot
+            ax.set_title('Precision-Recall Curve')
+            ax.set_ylabel('Precision')
+            ax.set_xlabel('Recall')
+            st.pyplot(fig)
+
+            # fig = plt.subplots(figsize=(3, 3))
+            # skplt.metrics.plot_roc_curve(y_test, y_pred[:,:2])
+            # st.pyplot(fig)
+
+
+
+
+    
+    
+    
+    
+###############CONCLUSION  
+elif rad == "Conclusion & Perspectives":
+    st.header('Conclusion')
+    if st.button('Click if you want to see the scoring metrics for all models tested'):
+
+        #Display dataframe of all scores
+        df_all_scores=pd.read_csv('C:/Users/celin/Documents/cours/formation_DatascienTest_2022_bootcamp/projet_satisfaction_client/df_all_scores.csv', index_col=0)
+        st.markdown("Performance results for all models")
+        st.write(df_all_scores)
+    #Visualization (barplot) of the scores obtained for the different models:
+        df_graph=df_all_scores.reset_index().melt('index',var_name='cols',value_name='vals')
+
+        fig, ax = plt.subplots(figsize=(12,5))
+        sns.barplot(x = 'vals', y = 'cols' , data = df_graph, hue = 'index', palette='Blues')
+        ax.set(xlabel='Score Value',ylabel='Classifier')
+        ax.set_xlim(0.7, 0.95)
+        plt.legend(bbox_to_anchor=(1,1))
+        st.pyplot(fig)
+    st.markdown("In  this  project,  we  compared 4 supervised machine learning approaches :  Gradient Boosting, CatBooting, SVM and Logistic Regression and 2 deep learning models. Reviews were preprocesssed and prepared using  various  NLP  techniques  including  stopwords  removal,  word lemmatization,  TF-IDF  vectorization and word embedding.  \n"
+                "Our  experimental  approaches  studied  the accuracy,  precision,  recall,  and  F1  score , focusing on the precision metrics so as to minimize the false positives."
+                "Overall,  all  our  models  were  able  to  classify  negative  and  positive  reviews  with good  accuracy  and  precision (minimum of 86%) with SVC outperforming the other classifiers, including the Dense Neural Networks models with scoring metrics reaching 90% (accuracy, precision recall and f1-score). However, we were able to reach a precision of 93% using a fastText classifier (preliminary data). Fasttext using shallow neural network, we might be able to improve our deep learning models performance by opting for a simpler architecture.  \n"
+                "There are few other options that we have not tried, since lots of NLP tools are dedicated to the English language. Among them, CamemBERT, whish is state-of-the-art language model for French based on RoBERTa architecture.  \n"
+                "All supervised machine learning algorithms  performed  better  in  term  of classifying positive sentiment, with systematically lower precision and F1-scores for the negative class. This might be due to the reduced proportion  of  negative reviews  or the fact we included the 3-star reviews in the negative class, which could slighltly skew the distinction between negative and positive sentiment.  \n"
+                "Future work would focus on optimizing our models for a multiclass classification problem so as to predict more accurately the star rating (4 classes by removing the 3-star/'neutral' rating class).")    
+    st.header('Perspectives')
+    st.markdown("If we try to project further results of our work and put it into more business perspective, a valuable insight we could obtain, it would be to understand what are the reasons of satisfaction or dissatisfaction from customers. This could help the company to monitor its activity completed with additionnal key performance indicators (KPI), tracking evolution per region of good/bad comments for each of these main categories identified.  \n"
+                "We could also complete this analysis by deep diving into specific comments where interaction has been initiated with the customer. (Is the answer appropriate? Is there any continuation ? How is the situation resolved personally? etc...).  \n"
+                "As a consequence this would help the company to engage concrete action plan internally that would improve its operational efficiency, and in-fine its digital reputation."
+                "In this report we already tried to serve this purpose in different ways, notably:  \n"
+                ">- our work with the reviews POStagging showed that we can retrieve easily features that would allow us not only to identify more precisely customers'pain points, but also to study their seasonal and yearly trends/changes.  \n"
+                ">- In a different approach, we also initated a mapping defining all main categories and sub-categories using Graph Theory and NetworkX library. This first exercice showed us that the analysis of the community and relationship between each other could be also an interesting insight.(Is there issue common to other categories? To re-phrase it from the opposite angle: 'If we solve this issue, this will tackle two problems in one').  \n"
+                ">- Finally we focused on the reviews written in French as they represented more than 89% of our dataset, it would be interesting to collect more reviews that are in the top 5 languages.  \n"
+                "In a nutshell, this project is just the beginning of a bigger AI application and, with further development effort, could spark off the interest of retail companies.")
     
     
     
