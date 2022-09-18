@@ -6,3 +6,6 @@ plotly
 datetime
 scikit-plot
 catboost
+joblib
+scipy.sparse
+sklearn
