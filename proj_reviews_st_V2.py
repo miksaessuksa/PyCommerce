@@ -512,7 +512,7 @@ elif rad == "Data processing":
                 "In addition to the number of words and sentences that correlated significantly with the ratings, we counted **punctuations** (exclamation and interrogation marks and ellipsis), **capslocks**, and **negative words** (ne,pas,ni,jamais,aucune,aucun,rien,sans,plus,n') and then try to identify any strong correlation between all the features and the rating.  \n"
                 "Categorical features were dummy-encoded and numerical features were normalized using MinMaxScaler.  \n"
                 "We kept only features displaying higher correlation with the target feature rating.")
-    if st.button('Click if you want to see the correlation heatmap of all features'):
+    if st.button('Click if you want to see the features correlation heatmap'):
         img = Image.open('feats_heatmap.png')
         st.image(img, caption=None, width=None, use_column_width=None, clamp=False, channels="RGB", output_format="auto")
     st.markdown ("### Processed data")
