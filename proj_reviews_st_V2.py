@@ -10,21 +10,25 @@ import plotly.graph_objects as go
 import re
 import datetime as dt
 import base64
+from PIL import Image
 
-import scikitplot as skplt
+#import scikitplot as skplt
 from sklearn.metrics import roc_curve, auc
 from sklearn.metrics import precision_recall_curve
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import GradientBoostingClassifier
-from sklearn.metrics import classification_report
-from sklearn.metrics import f1_score
-from sklearn.metrics import precision_score
-from sklearn.metrics import recall_score
-from sklearn.metrics import classification_report
+from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import f1_score, precision_score,recall_score
 from catboost import CatBoostClassifier
-from sklearn.naive_bayes import BernoulliNB,MultinomialNB
-from sklearn.svm import SVC 
+from sklearn.model_selection import train_test_split
+#from sklearn.linear_model import LogisticRegression    
+from sklearn.metrics import plot_confusion_matrix, plot_roc_curve
+#from catboost import CatBoostClassifier
+    #from sklearn.svm import SVC
+from scipy.sparse import hstack
+import joblib
+from sklearn.feature_selection import SelectKBest
 
 
 #Creation of a dataframe with with the data from the file "reviews_trust.csv":
@@ -36,7 +40,9 @@ pd.set_option("display.max_rows", None)
 
 
 #Sidebar creation: 
-rad = st.sidebar.radio("Menu",["Project presentation", "Explorative Data Analysis", "Data processing", "Modeling", "Conclusion & Perspectives"])
+st.sidebar.markdown('# PyCommerce')
+rad = st.sidebar.radio('MENU', ("Project presentation", "Explorative Data Analysis", "Data processing", "Modeling","Evaluation", "Conclusion & Perspectives", 'Project team'))
+    
 
 def add_bg_from_local(image_file):
     with open(image_file, "rb") as image_file:
@@ -76,8 +82,8 @@ if rad == "Project presentation":
 ###############EDA
 elif rad == "Explorative Data Analysis":
     st.header('Explorative Data Analysis')
-    st.markdown('### 1. Data description and preparation')
-    st.markdown('> #### 1.1. Dataset discovery')
+    st.markdown('### Data description and preparation')
+    st.markdown('> #### 1. Dataset discovery')
 
 
 #Visualize the first lines of the dataframe:
@@ -105,7 +111,7 @@ elif rad == "Explorative Data Analysis":
         st.text(info)                
 
 #CLEANING DUPLICATES AND NA
-    st.markdown('> #### 1.2. Cleaning of Duplicates & NaN')
+    st.markdown('> #### 2. Cleaning of Duplicates & NaN')
     
     #Check for duplicates:
     nb_duplicates=df.duplicated().sum()
@@ -150,7 +156,7 @@ elif rad == "Explorative Data Analysis":
     df1_fr= df1_fr.drop('langue', axis=1)
 
 #DATA VISUALIZATION    
-    st.markdown("### 2. Data Visualization")
+    st.markdown("### Data Visualization")
    #Ratings distribution
     st.markdown("Let's first have a look at the ratings distribution that will be our target variable:")
 #Pie chart
@@ -498,32 +504,55 @@ elif rad == "Explorative Data Analysis":
     st.markdown('##### New Rating Distribution')
     st.plotly_chart(fig)
     
-###############EDA
-elif rad == "Modeling":    
+###############    DATA PROCESSING
+elif rad == "Data processing":  
+    st.header('Data processing')
+    st.subheader('Features selection')
+    st.markdown("Since the text preprocessing is an essential step in building an efficient machine learning model, we tried to identify features that connotate a sentiment and are usually removed during the process but could improve the algorithm performance.  \n"
+                "In addition to the number of words and sentences that correlated significantly with the ratings, we counted **punctuations** (exclamation and interrogation marks and ellipsis), **capslocks**, and **negative words** (ne,pas,ni,jamais,aucune,aucun,rien,sans,plus,n') and then try to identify any strong correlation between all the features and the rating.  \n"
+                "Categorical features were dummy-encoded and numerical features were normalized using MinMaxScaler.  \n"
+                "We kept only features displaying higher correlation with the target feature rating.")
+    if st.button('Click if you want to see the correlation heatmap of all features'):
+        img = Image.open('feats_heatmap.png')
+        st.image(img, caption=None, width=None, use_column_width=None, clamp=False, channels="RGB", output_format="auto")
+    st.markdown ("### Processed data")
+    df_feats=pd.read_csv('feats_minmaxscaled.csv', index_col=0)
+    df_feats.drop('No_stopwords_joined',axis=1, inplace=True)
+    df_feats.rename(columns={'spacy_lemmatized_j':'Lemma'}, inplace=True)
+    nb_rows=st.number_input("Choose the number of rows you want to display:", 0, 19000, 5)
+    st.write(df_feats.head(nb_rows))
+
+
+
+####################  MODELING
+elif rad == "Modeling":
+    st.header('Modeling')
+    st.subheader('Data preparation')
+    st.markdown("We used the lemmatized reviews, alone, or in combination with features that were highly correlated with the sentiment (word, sentence and negation counts, source).  \n")
+    st.markdown ("Since machine learning algorithms cannot process text directly, the text needs to be converted into numbers, or more precisely vectors of numbers. We used a popular and simple method of feature extraction with text data, called the **bag-of-words (BOW)**. It is a representation of text that describes the occurrence of words within a text. To reduce the dimensionality of the resulting matrix, it is usually preceded by a step of text preprocessing, as described in the previous part.  \n"
+    "We used an advanced variant of the BOW that used the **term frequency–inverse document frequency (or Tf–Idf)**. Basically, the value of a word increases proportionally to count, but it is inversely proportional to the frequency of the word in the text. We used the text cleaned and lemmatized to feed the Tf-Idf.")
+    st.subheader('Machine Learning and Deep Learning models')
+    st.markdown("We predicted the sentiment (positive or negative) of reviews with 4 classification  models,  namely :  \n"
+                ">- **Gradient Boosting**  \n"
+                ">- **CatBoosting**  \n"
+                ">- **Logistic Regression**  \n"
+                ">- **Support Vector Machine (SVM)**  \n")
+    img = Image.open('modeling2.png')
+    st.image(img, caption=None, width=None, use_column_width=None, clamp=False, channels="RGB", output_format="auto")
+    st.write("As for deep learning models we used dense neural networks including an embeddding layer and a MaxPooling step followed by a dense layer wit a ReLU function and a last dense layer with a sigmoid activation function. Only the comments were used as inputs (Lemma).  \n"
+                "We also tried to use a **fastText** pre-trained model to create an embedding matrix to initialize the embedding layer. [FastText] (https://fasttext.cc/) is an open-source library, developed by the Facebook AI Research lab and has proven to be very efficient on many NLP problems, such as semantic similarity detection and text classification.")   
+    
+   
+    
+###############     EVALUATION
+elif rad == "Evaluation":    
+   
 
     
-    #from nltk.corpus import stopwords
-    from sklearn.model_selection import train_test_split
-    from sklearn.ensemble import GradientBoostingClassifier
-    from sklearn.linear_model import LogisticRegression
-    from sklearn.metrics import classification_report
-    from sklearn.metrics import f1_score
-    from sklearn.metrics import precision_score
-    from sklearn.metrics import recall_score
-    from sklearn.metrics import classification_report
-    from sklearn.metrics import confusion_matrix
-    from sklearn.metrics import plot_confusion_matrix, plot_roc_curve
-    from catboost import CatBoostClassifier
-    from sklearn.naive_bayes import BernoulliNB,MultinomialNB
-    from sklearn.svm import SVC
-    from scipy.sparse import hstack
-    from sklearn.metrics import precision_score, recall_score
-    import scikitplot as skplt
-    
     # def main():
-    st.title('Predicting Sentiment Reviews')
-    st.sidebar.title('Model Selection Panel')
-    st.subheader('Results Analysis')
+    st.header('Predicting Sentiment Reviews')
+    st.sidebar.header('Model Selection Panel')
+    #st.subheader('Results Analysis')
     st.sidebar.markdown('Choose your model')
         #@st.cache(allow_output_mutation=True)
         #@st.cache(persist=True)
@@ -541,115 +570,342 @@ elif rad == "Modeling":
     X_test = hstack((X_test_text, feats_test.drop('spacy_lemmatized_j', axis=1).values))
 
     class_names = ['Negative', 'Positive']
+    
+    # Definition of function resulting score computation of Algorithm mentionned in parameter
+    def scores (model,X_train,y_train,X_test,y_test, y_pred):
+    #Takes ML classifier, training and validation sets, and predictions and returns scores (accuracy, recall, f1, precision).
+        score_train=model.score(X_train,y_train)                  # accuracy for training set
+        score_test=model.score(X_test, y_test)                    # accuracy for validation set
+        precision=precision_score(y_test, y_pred,average='macro') # precision for the validation set
+        recall=recall_score(y_test, y_pred,average='macro')       # recall for the validation set
+        f1=f1_score(y_test, y_pred,average='macro')               # f1 for the validation set
+        return score_train, score_test, precision,recall,f1
+
+    # Defintion of function resulting score computation of Algorithm mentionned in parameter   
+    def Confusion_matrix(title,y_test,y_pred):
+    #Takes 3 arguments (Title, target and predictions) and returns a visualization of the confusion matrix.
+        cm = pd.crosstab(y_test, y_pred, rownames=['Actual'], colnames=['Predicted'])
+        col1, col2, col3= st.columns([1,2, 1])
+        with col2:
+            fig=plt.figure(figsize=(4,3))
+            sns.heatmap(cm, annot=True, fmt="d", cmap='Blues')
+            plt.title(title)
+            st.pyplot(fig)
+        return cm    
         
-        
-    st.sidebar.subheader('Select your Classifier')
-    classifier = st.sidebar.selectbox('Classifier', ('Catboosting', 'Logistic Regression', 'Gradient Boosting', 'Gradient Boosting - Pipeline', 'Support Vector Machine', 'Support Vector Machine - Pipeline'))
+    #st.sidebar.subheader('Select your Classifier')
+    classifier = st.sidebar.selectbox('Classifier:', ('CatBoost', 'Logistic Regression','Logistic Regression - Pipeline' ,'Gradient Boosting', 'Gradient Boosting - Pipeline', 'Support Vector Machine', 'Support Vector Machine - Pipeline'))
 
         
     if classifier == 'Gradient Boosting':
-        metrics = st.sidebar.multiselect('Select your metrics?', ('Confusion Matrix', 'Precision-Recall Curve'))
+        metrics = st.sidebar.multiselect('Select your metrics:', ('Confusion Matrix', 'Precision-Recall Curve', 'Classification report'))
         st.sidebar.button('Classify', key='1')
         st.subheader('Gradient Boosting Results')
-        model = GradientBoostingClassifier(n_estimators=100, learning_rate=1.0, max_depth=1, random_state=49)
-        model.fit(X_train, y_train)
-        accuracy = model.score(X_test, y_test)
-        y_pred = model.predict(X_test)
-        st.write('Accuracy: ', accuracy.round(2)*100,'%')
-        st.write('Precision: ', precision_score(y_test, y_pred, labels=class_names).round(2))
-        st.write('Recall: ', recall_score(y_test, y_pred, labels=class_names).round(2))
+        GBC = GradientBoostingClassifier(n_estimators=100, learning_rate=1.0, max_depth=1, random_state=49)
+        GBC.fit(X_train, y_train)
+        #GBC = joblib.load("C:/Users/celin/Documents/cours/formation_DatascienTest_2022_bootcamp/projet_satisfaction_client/GBC_model.joblib")
+        #accuracy = model.score(X_test, y_test)
+        y_pred_GBC = GBC.predict(X_test)
+        score_train_GBC, score_test_GBC,precision_GBC,recall_GBC,f1_GBC=scores(GBC,X_train,y_train,X_test,y_test, y_pred_GBC)
+        st.write('Accuracy: ', score_test_GBC.round(2))
+        st.write('Precision: ', precision_GBC.round(2))
+        st.write('Recall: ', recall_GBC.round(2))
         
         if 'Confusion Matrix' in metrics:
 
-            confusion_matrix = confusion_matrix(y_test, y_pred)
+            Confusion_matrix('Gradient Boosting confusion matrix',y_test, y_pred_GBC)
+             
 
-            fig, ax = plt.subplots(figsize=(3, 3))
-            ax.matshow(confusion_matrix, cmap=plt.cm.Blues, alpha=0.3)
-            for i in range(confusion_matrix.shape[0]):
-                for j in range(confusion_matrix.shape[1]):
-                    ax.text(x=j, y=i,s=confusion_matrix[i, j], va='center', ha='center', size='xx-large')
-            
-            plt.xlabel('Predictions', fontsize=10)
-            plt.ylabel('Actuals', fontsize=10)
-            plt.title('Confusion Matrix', fontsize=10)
-            st.pyplot(fig)
-
-        else:
-            y_score = model.predict_proba(X_test)[:, 1]
+        if 'Precision-Recall Curve' in metrics:
+            y_score = GBC.predict_proba(X_test)[:, 1]
             #calculate precision and recall
             precision, recall, thresholds = precision_recall_curve(y_test, y_score)
 
             #create precision recall curve
-            fig, ax = plt.subplots(figsize=(3, 3))
-            ax.plot(recall, precision, color='purple')
+            col1, col2, col3= st.columns([1,2, 1])
+            with col2:
+                fig, ax = plt.subplots(figsize=(2, 2))
+                ax.plot(recall, precision, color='purple')
 
             # add axis labels to plot
-            ax.set_title('Precision-Recall Curve')
-            ax.set_ylabel('Precision')
-            ax.set_xlabel('Recall')
-            st.pyplot(fig)
-
-    elif classifier == 'Logistic Regression':
-        st.sidebar.subheader('Model Parameters')
-        metrics = st.sidebar.multiselect('Select your metrics?', ('Confusion Matrix', 'Precision-Recall Curve'))
-        st.sidebar.button('Classify', key='2')
-        st.subheader('Logistic Regression Results')
-        model = LogisticRegression(class_weight='balanced', penalty='l2', solver='lbfgs',C=1)
-        model.fit(X_train, y_train)
-        accuracy = model.score(X_test, y_test)
-        y_pred = model.predict(X_test)
-        st.write('Accuracy: ', accuracy.round(2)*100,'%')
-        st.write('Precision: ', precision_score(y_test, y_pred, labels=class_names).round(2))
-        st.write('Recall: ', recall_score(y_test, y_pred, labels=class_names).round(2))
-
+                ax.set_title('Precision-Recall Curve')
+                ax.set_ylabel('Precision')
+                ax.set_xlabel('Recall')
+                st.pyplot(fig)
+        else:
+            
+            class_rep_GBC=pd.DataFrame(classification_report(y_test, y_pred_GBC, output_dict=True))
+            st.markdown("Classification report for GradientBoosting Classifier:") 
+            st.write(class_rep_GBC.round(3))  
+            
+    if classifier == 'Gradient Boosting - Pipeline':
+        metrics = st.sidebar.multiselect('Select your metrics:', ('Confusion Matrix', 'Precision-Recall Curve', 'Classification report'))
+        st.sidebar.button('Classify', key='1')
+        st.subheader('Gradient Boosting - Pipeline Results')
+        sel = SelectKBest( k=3000)
+        sel.fit(X_train,y_train)
+        #Training and predictions
+        X_train_sel = sel.transform(X_train)
+        X_test_sel = sel.transform(X_test)
+        GBC_pipe = GradientBoostingClassifier(n_estimators=500, learning_rate=0.3, random_state=49,
+                                              loss='exponential', max_features='auto')
+        GBC_pipe.fit(X_train_sel, y_train)
+        y_pred_GBC_pipe=GBC_pipe.predict(X_test_sel)
+        score_train_GBC_pipe, score_test_GBC_pipe,precision_GBC_pipe,recall_GBC_pipe,f1_GBC_pipe=scores(GBC_pipe,X_train_sel,y_train,X_test_sel,y_test, y_pred_GBC_pipe)
+        st.write('Accuracy: ', score_test_GBC_pipe.round(2))
+        st.write('Precision: ', precision_GBC_pipe.round(2))
+        st.write('Recall: ', recall_GBC_pipe.round(2))
+        
         if 'Confusion Matrix' in metrics:
 
-            confusion_matrix = confusion_matrix(y_test, y_pred)
+            Confusion_matrix('Gradient Boosting - Pipeline confusion matrix',y_test, y_pred_GBC_pipe)
+             
 
-            fig, ax = plt.subplots(figsize=(3, 3))
-            ax.matshow(confusion_matrix, cmap=plt.cm.Blues, alpha=0.3)
-            for i in range(confusion_matrix.shape[0]):
-                for j in range(confusion_matrix.shape[1]):
-                    ax.text(x=j, y=i,s=confusion_matrix[i, j], va='center', ha='center', size='xx-large')
-            
-            plt.xlabel('Predictions', fontsize=10)
-            plt.ylabel('Actuals', fontsize=10)
-            plt.title('Confusion Matrix', fontsize=10)
-            st.pyplot(fig)
-
-        else:
-            y_score = model.predict_proba(X_test)[:, 1]
+        if 'Precision-Recall Curve' in metrics:
+            y_score = GBC_pipe.predict_proba(X_test_sel)[:, 1]
             #calculate precision and recall
             precision, recall, thresholds = precision_recall_curve(y_test, y_score)
 
             #create precision recall curve
-            fig, ax = plt.subplots(figsize=(3, 3))
-            ax.plot(recall, precision, color='purple')
+            col1, col2, col3= st.columns([1,2, 1])
+            with col2:
+                fig, ax = plt.subplots(figsize=(2, 2))
+                ax.plot(recall, precision, color='purple')
 
             # add axis labels to plot
-            ax.set_title('Precision-Recall Curve')
-            ax.set_ylabel('Precision')
-            ax.set_xlabel('Recall')
-            st.pyplot(fig)
+                #ax.set_title('Precision-Recall Curve')
+                st.markdown("Classification report for GradientBoosting Classifier:")
+                ax.set_ylabel('Precision')
+                ax.set_xlabel('Recall')
+                st.pyplot(fig)
+        else:
+                
+                class_rep_GBC_pipe=pd.DataFrame(classification_report(y_test, y_pred_GBC_pipe, output_dict=True))
+                st.markdown("Classification report for GradientBoostingClassifier - Pipeline:") 
+                st.write(class_rep_GBC_pipe.round(3))
+    
+    elif classifier == 'Logistic Regression':
+    
+        metrics = st.sidebar.multiselect('Select your metrics:', ('Confusion Matrix', 'Precision-Recall Curve', 'Classification report'))
+        st.sidebar.button('Classify', key='1')
+        st.subheader('Logistic Regression Results')
+        LR = joblib.load("LR_model.joblib")
+        #LR = LogisticRegression()
+        #LR.fit(X_train, y_train)
+        y_pred_LR=LR.predict(X_test)
 
-            # fig = plt.subplots(figsize=(3, 3))
-            # skplt.metrics.plot_roc_curve(y_test, y_pred[:,:2])
-            # st.pyplot(fig)
+        score_train_LR, score_test_LR,precision_LR,recall_LR,f1_LR=scores(LR,X_train,y_train,X_test,y_test, y_pred_LR)
 
+        #accuracy = model.score(X_test, y_test)
+        st.write('Accuracy: ', score_test_LR.round(2))
+        st.write('Precision: ', precision_LR.round(2))
+        st.write('Recall: ', recall_LR.round(2))
+        
+        if 'Confusion Matrix' in metrics:
 
+            Confusion_matrix ("Logistic Regression Classifier Confusion Matrix ",y_test, y_pred_LR)
+             
 
+        if 'Precision-Recall Curve' in metrics:
+            y_score = LR.predict_proba(X_test)[:, 1]
+            #calculate precision and recall
+            precision, recall, thresholds = precision_recall_curve(y_test, y_score)
 
+            #create precision recall curve
+            col1, col2, col3= st.columns([1,2, 1])
+            with col2:
+                fig, ax = plt.subplots(figsize=(2, 2))
+                ax.plot(recall, precision, color='purple')
+
+            # add axis labels to plot
+                ax.set_title('Precision-Recall Curve')
+                ax.set_ylabel('Precision')
+                ax.set_xlabel('Recall')
+                st.pyplot(fig)
+        else:
+            
+            class_rep_LR=pd.DataFrame(classification_report(y_test, y_pred_LR, output_dict=True)).round(3)
+            st.markdown("Classification report for Logistic Regression Classifier:") 
+            st.write(class_rep_LR)  
+
+    elif classifier == 'Logistic Regression - Pipeline':
+    
+        metrics = st.sidebar.multiselect('Select your metrics:', ('Confusion Matrix', 'Precision-Recall Curve', 'Classification report'))
+        st.sidebar.button('Classify', key='1')
+        st.subheader('Logistic Regression Results')
+        LR_pipe = joblib.load("LR_pipe_model.joblib")
+        #LR_pipe = LogisticRegression(class_weight='balanced', penalty='l2', solver='lbfgs',C=1)
+        #LR_pipe.fit(X_train, y_train)
+        y_pred_LR_pipe=LR_pipe.predict(X_test)
+
+        score_train_LR_pipe, score_test_LR_pipe,precision_LR_pipe,recall_LR_pipe,f1_LR_pipe=scores(LR_pipe,X_train,y_train,X_test,y_test, y_pred_LR_pipe)
+        #accuracy = model.score(X_test, y_test)
+        st.write('Accuracy: ', score_test_LR_pipe.round(2))
+        st.write('Precision: ', precision_LR_pipe.round(2))
+        st.write('Recall: ', recall_LR_pipe.round(2))
+        
+        if 'Confusion Matrix' in metrics:
+
+            Confusion_matrix ("Logistic Regression - Pipeline Classifier Confusion Matrix ",y_test, y_pred_LR_pipe)
+             
+
+        if 'Precision-Recall Curve' in metrics:
+            y_score = LR_pipe.predict_proba(X_test)[:, 1]
+            #calculate precision and recall
+            precision, recall, thresholds = precision_recall_curve(y_test, y_score)
+
+            #create precision recall curve
+            col1, col2, col3= st.columns([1,2, 1])
+            with col2:
+                fig, ax = plt.subplots(figsize=(2, 2))
+                ax.plot(recall, precision, color='purple')
+
+            # add axis labels to plot
+                ax.set_title('Precision-Recall Curve')
+                ax.set_ylabel('Precision')
+                ax.set_xlabel('Recall')
+                st.pyplot(fig)
+        else:
+            
+            class_rep_LR_pipe=pd.DataFrame(classification_report(y_test, y_pred_LR_pipe, output_dict=True)).round(3)
+            st.markdown("Classification report for Logistic Regression - Pipeline Classifier:") 
+            st.write(class_rep_LR_pipe)  
+
+    elif classifier == 'CatBoost':
+        metrics = st.sidebar.multiselect('Select your metrics:', ('Confusion Matrix', 'Precision-Recall Curve', 'Classification report'))
+        st.sidebar.button('Classify', key='1')
+        st.subheader('CatBoost Results')
+        #CBC =CatBoostClassifier(iterations=100, random_seed=42, )
+        #Training and predictions
+        #CBC.fit(X_train, y_train)
+        CBC = joblib.load("CBC_model.joblib")
+
+        y_pred_CBC=CBC.predict(X_test)
+        score_train_CBC, score_test_CBC,precision_CBC,recall_CBC,f1_CBC=scores(CBC,X_train,y_train,X_test,y_test, y_pred_CBC)
+        st.write('Accuracy: ', score_test_CBC.round(2))
+        st.write('Precision: ', precision_CBC.round(2))
+        st.write('Recall: ', recall_CBC.round(2))
+        
+        if 'Confusion Matrix' in metrics:
+
+            Confusion_matrix ("CatBoost Classifier Confusion Matrix ",y_test, y_pred_CBC)
+             
+
+        if 'Precision-Recall Curve' in metrics:
+            y_score = CBC.predict_proba(X_test)[:, 1]
+            #calculate precision and recall
+            precision, recall, thresholds = precision_recall_curve(y_test, y_score)
+
+            #create precision recall curve
+            col1, col2, col3= st.columns([1,2, 1])
+            with col2:
+                fig, ax = plt.subplots(figsize=(2, 2))
+                ax.plot(recall, precision, color='purple')
+
+            # add axis labels to plot
+                ax.set_title('Precision-Recall Curve')
+                ax.set_ylabel('Precision')
+                ax.set_xlabel('Recall')
+                st.pyplot(fig)
+        else:
+            
+            class_rep_CBC=pd.DataFrame(classification_report(y_test, y_pred_CBC, output_dict=True)).round(3)
+            st.markdown("Classification report for  CatBoost Classifier:") 
+            st.write(class_rep_CBC)
+            
+            
+    elif classifier == 'Support Vector Machine':
+    
+        metrics = st.sidebar.multiselect('Select your metrics:', ('Confusion Matrix', 'Precision-Recall Curve', 'Classification report'))
+        st.sidebar.button('Classify', key='1')
+        st.subheader('Support Vector Machine Results')
+        SVC = joblib.load("SVC_model.joblib")
+        #SVC=SVC()
+        #SVC.fit(X_train, y_train)
+        y_pred_SVC=SVC.predict(X_test)
+        score_train_SVC, score_test_SVC,precision_SVC,recall_SVC,f1_SVC=scores(SVC,X_train,y_train,X_test,y_test, y_pred_SVC)
+
+        #accuracy = model.score(X_test, y_test)
+        st.write('Accuracy: ', score_test_SVC.round(2))
+        st.write('Precision: ', precision_SVC.round(2))
+        st.write('Recall: ', recall_SVC.round(2))
+        
+        if 'Confusion Matrix' in metrics:
+
+            Confusion_matrix ("Support Vector Machine Classifier Confusion Matrix  ",y_test, y_pred_SVC)             
+
+        if 'Precision-Recall Curve' in metrics:
+            y_score = SVC.predict_proba(X_test)[:, 1]
+            #calculate precision and recall
+            precision, recall, thresholds = precision_recall_curve(y_test, y_score)
+
+            #create precision recall curve
+            col1, col2, col3= st.columns([1,2, 1])
+            with col2:
+                fig, ax = plt.subplots(figsize=(2, 2))
+                ax.plot(recall, precision, color='purple')
+
+            # add axis labels to plot
+                ax.set_title('Precision-Recall Curve')
+                ax.set_ylabel('Precision')
+                ax.set_xlabel('Recall')
+                st.pyplot(fig)
+        else:
+            
+            class_rep_SVC=pd.DataFrame(classification_report(y_test, y_pred_SVC, output_dict=True)).round(3)
+            st.markdown("Classification report for Support Vector Classifier:") 
+            st.write(class_rep_SVC)
+
+    elif classifier == 'Support Vector Machine - Pipeline':
+    
+        metrics = st.sidebar.multiselect('Select your metrics:', ('Confusion Matrix', 'Precision-Recall Curve', 'Classification report'))
+        st.sidebar.button('Classify', key='1')
+        st.subheader('Support Vector Machine Results')
+        SVC_pipe = joblib.load("SVC_pipe_model.joblib")
+        #SVC_pipe = SVC(kernel='linear',class_weight='balanced', gamma='scale',C=1)
+        #SVC_pipe.fit(X_train, y_train)
+        y_pred_SVC_pipe = SVC_pipe.predict(X_test)
+        score_train_SVC_pipe, score_test_SVC_pipe, precision_SVC_pipe, recall_SVC_pipe, f1_SVC_pipe=scores(SVC_pipe,X_train,y_train,X_test,y_test, y_pred_SVC_pipe)
+        #accuracy = model.score(X_test, y_test)
+        st.write('Accuracy: ', score_test_SVC_pipe.round(2))
+        st.write('Precision: ', precision_SVC_pipe.round(2))
+        st.write('Recall: ', recall_SVC_pipe.round(2))
+        
+        if 'Confusion Matrix' in metrics:
+
+            Confusion_matrix ("Support Vector Classifier - Pipeline Confusion Matrix  ",y_test, y_pred_SVC_pipe)             
+
+        if 'Precision-Recall Curve' in metrics:
+            y_score = SVC_pipe.predict_proba(X_test)[:, 1]
+            #calculate precision and recall
+            precision, recall, thresholds = precision_recall_curve(y_test, y_score)
+
+            #create precision recall curve
+            col1, col2, col3= st.columns([1,2, 1])
+            with col2:
+                fig, ax = plt.subplots(figsize=(2, 2))
+                ax.plot(recall, precision, color='purple')
+
+            # add axis labels to plot
+                ax.set_title('Precision-Recall Curve')
+                ax.set_ylabel('Precision')
+                ax.set_xlabel('Recall')
+                st.pyplot(fig)
+        else:
+            
+            class_rep_SVC_pipe=pd.DataFrame(classification_report(y_test, y_pred_SVC_pipe, output_dict=True))
+            st.markdown("Classification report for Support Vector Classifier - Pipeline:") 
+            st.write(class_rep_SVC_pipe.round(3))    
     
     
     
-    
-###############CONCLUSION  
+###############     CONCLUSION  
 elif rad == "Conclusion & Perspectives":
     st.header('Conclusion')
     if st.button('Click if you want to see the scoring metrics for all models tested'):
 
         #Display dataframe of all scores
-        df_all_scores=pd.read_csv('df_all_scores.csv', index_col=0)
+        df_all_scores=pd.read_csv('C:/Users/celin/Documents/cours/formation_DatascienTest_2022_bootcamp/projet_satisfaction_client/df_all_scores.csv', index_col=0)
         st.markdown("Performance results for all models")
         st.write(df_all_scores)
     #Visualization (barplot) of the scores obtained for the different models:
@@ -661,7 +917,7 @@ elif rad == "Conclusion & Perspectives":
         ax.set_xlim(0.7, 0.95)
         plt.legend(bbox_to_anchor=(1,1))
         st.pyplot(fig)
-    st.markdown("In  this  project,  we  compared 4 supervised machine learning approaches :  Gradient Boosting, CatBooting, SVM and Logistic Regression and 2 deep learning models. Reviews were preprocesssed and prepared using  various  NLP  techniques  including  stopwords  removal,  word lemmatization,  TF-IDF  vectorization and word embedding.  \n"
+    st.markdown("In  this  project,  we  compared 4 supervised machine learning approaches :  Gradient Boosting, CatBoosting, SVM and Logistic Regression and 2 deep learning models. Reviews were preprocesssed and prepared using  various  NLP  techniques  including  stopwords  removal,  word lemmatization,  TF-IDF  vectorization and word embedding.  \n"
                 "Our  experimental  approaches  studied  the accuracy,  precision,  recall,  and  F1  score , focusing on the precision metrics so as to minimize the false positives."
                 "Overall,  all  our  models  were  able  to  classify  negative  and  positive  reviews  with good  accuracy  and  precision (minimum of 86%) with SVC outperforming the other classifiers, including the Dense Neural Networks models with scoring metrics reaching 90% (accuracy, precision recall and f1-score). However, we were able to reach a precision of 93% using a fastText classifier (preliminary data). Fasttext using shallow neural network, we might be able to improve our deep learning models performance by opting for a simpler architecture.  \n"
                 "There are few other options that we have not tried, since lots of NLP tools are dedicated to the English language. Among them, CamemBERT, whish is state-of-the-art language model for French based on RoBERTa architecture.  \n"
