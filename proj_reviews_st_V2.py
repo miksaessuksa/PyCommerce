@@ -659,7 +659,7 @@ elif rad == "Modeling":
     st.subheader('Data preparation')
     st.markdown("We used the lemmatized reviews, alone, or in combination with features that were highly correlated with the sentiment (word, sentence and negation counts, source).  \n")
     st.markdown ("Since machine learning algorithms cannot process text directly, the reviews need to be converted into numbers, or more precisely vectors of numbers. We used a popular and simple method of feature extraction with text data, called the **bag-of-words (BOW)**. It is a representation of text that describes the occurrence of words within a text. To reduce the dimensionality of the resulting matrix, it is usually preceded by a step of text preprocessing, as described in the previous part.  \n"
-    "We used an advanced variant of the BOW that used the **term frequency–inverse document frequency (or Tf–Idf)**. Basically, the value of a word increases proportionally to count, but it is inversely proportional to the frequency of the word in the text. We used the text cleaned and lemmatized to feed the Tf-Idf."  \n
+    "We used an advanced variant of the BOW that used the **term frequency–inverse document frequency (or Tf–Idf)**. Basically, the value of a word increases proportionally to count, but it is inversely proportional to the frequency of the word in the text. We used the text cleaned and lemmatized to feed the Tf-Idf.  \n"
     "We also tried to improve the models performance by defining a pipeline that allowed us to select the best features and the best hyperparameters.")
     st.subheader('Machine Learning and Deep Learning models')
     st.markdown("We predicted the sentiment (positive or negative) of reviews with 4 classification  models,  namely :  \n"
