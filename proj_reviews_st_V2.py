@@ -30,6 +30,11 @@ from scipy.sparse import hstack
 import joblib
 from sklearn.feature_selection import SelectKBest
 
+import networkx as nx
+from pyvis.network import Network
+from community.community_louvain import best_partition
+import streamlit.components.v1 as components
+
 
 #Creation of a dataframe with with the data from the file "reviews_trust.csv":
 df=pd.read_csv('reviews_trust.csv', index_col=0)
@@ -503,6 +508,127 @@ elif rad == "Explorative Data Analysis":
    )
     st.markdown('##### New Rating Distribution')
     st.plotly_chart(fig)
+
+#SENTIMENT ANALYSIS    
+    st.markdown("### Sentiment analysis")
+    st.markdown("Let's go further into the comments and identify the most redundant key words to have a first flavour of the general sentiment. For this purpose we will use mainly **NLTK** and **Spacy** libraries. \n")
+    st.markdown("With help of these librairies, we went through several manipualtion as tokenization, lemmatization, POS tagging, etc...")  
+    if st.button('Click here if you want to discover the full cleaning process we went through'):
+        st.image('text_processing.jpg')
+    
+    st.markdown('The first result of this sentiment analysisis is given by the word cloud below.')    
+    
+    df1_fr = pd.read_csv('df_text_V6neg_joined.csv',index_col=0)
+   
+    #Grouping texts per sentiment. Positive, negative and neutral
+    def MyWordCloud(data, title,background):
+        """Function that takes 3 arguments: data (text input), title for the WordCloud, and color of background
+        for the Wordcloud, and returns a WordCloud"""
+        #Define parameters of the WordCloud
+        wordcloud = WordCloud(                          
+            background_color=background,
+            #stopwords = stop_words,
+            max_words=100,
+            max_font_size=40,
+            scale=3,
+            random_state=1).generate(str(data))
+        #Plot the WordCloud:
+        fig = plt.figure(1, figsize=(20, 20))
+        plt.axis('off')
+        if title:
+            fig.suptitle(title,fontsize=30)
+            fig.subplots_adjust(top=2.25)
+        plt.imshow(wordcloud)
+        plt.show()
+        st.pyplot(fig)
+    
+    st.markdown("---") 
+    st.markdown("***Word Cloud Visualization for each category of comments***")
+    slctbox_status = st.selectbox("Select which category of comments to display the corresponding word cloud",['Positive', 'Negative', 'Neutral'])
+    if (slctbox_status == 'Negative') :
+        df1_fr_neg = df1_fr[df1_fr.rating == 0]
+        MyWordCloud(df1_fr_neg.No_stopwords_joined,title="Positive reviews Wordcloud\n\n", background='black')
+    
+    elif (slctbox_status == 'Positive'):
+        df1_fr_pos = df1_fr[df1_fr.rating == 1]
+        MyWordCloud(df1_fr_pos.No_stopwords_joined,title="Negative reviews Wordcloud\n\n",background='white')
+    
+    elif (slctbox_status == 'Neutral'):
+        df1_fr_neutral = df1_fr[df1_fr.star == 3]
+        MyWordCloud(df1_fr_neutral.No_stopwords_joined,title="Neutral reviews Wordcloud\n\n",background='lightgray')
+    
+    st.markdown("---")     
+    st.markdown("""As expected, the WordCloud displaying most frequent words related to neutral reviews (star=3) combined words with 
+                both positive and negative connotations, which renders difficult to identify neutral specific words.""")
+    st.markdown("""To further the analysis, we took advantage of tools provided by **Sklearn** and **Collections** not only to make easier the identification of 
+                the most frequent words per sentiment, but also to aim at determining words that are specific to each sentiment. The 
+                use of Part-of-speech (POS) tagging allowed us to refine our analysis to single out specifically nouns, adjectives, verbs and adverbs
+                associated with a sentiment.""")
+    st.markdown("""You can see below the results of this analysis.""")
+    
+    df1_fr=pd.read_csv('df_rawtext_V6neg_postagging.csv',index_col=0)
+    df1_fr=df1_fr.fillna(' ') 
+    df1_fr.head()
+    
+    def words_counter (col):
+        """function that takes a column with texts and creates a dataframe listing unique tokens and their frequency"""
+        cv = CountVectorizer() 
+        vec = cv.fit_transform(col)
+        word_freq = dict(zip(cv.get_feature_names(), np.asarray(vec.sum(axis=0)).ravel())) #flatten
+        word_counter = collections.Counter(word_freq)
+        word_counter_df = pd.DataFrame(word_counter.most_common(), columns = ['word', 'freq'])
+        return (word_counter_df)
+    
+    def show_tree_map(df, nb_words, score_label, pos_tag=None):
+        if score_label == "Negative" :
+            score = 0 
+        else:
+            score = 1
+        
+        # Getting back columns corresponding to Tag selected
+        if len(pos_tag) > 1:
+            list_postag = [str(x).lower()+"_list_joined" for x in pos_tag]
+            print(list_postag)
+            df['target_column'] = df[list_postag].apply(' '.join, axis=1)
+            word_counter_df = words_counter(col=df[df.rating == score]['target_column'])        
+        elif len(pos_tag) == 1:
+            column_name = str(pos_tag[0]).lower()+"_list_joined"
+            print(column_name)
+            df['target_column'] = df[column_name]
+            word_counter_df = words_counter(col=df[df.rating == score]['target_column'])        
+        else:
+            df['target_column'] = df['No_stopwords_joined']
+            word_counter_df = words_counter(col=df[df.rating == score]['target_column'])
+            
+        # Chart of common words
+        fig1 = px.treemap(word_counter_df.iloc[:nb_words,], 
+                          path=['word'], 
+                          values='freq', 
+                          title= '{nb} most commonly used words in {txt} reviews'.format(nb = str(nb_words), txt = score_label), 
+                          color='freq',
+                          color_continuous_scale='GnBu')
+        st.plotly_chart(fig1)
+    
+        # Chart of unique words
+        word_counter_df_opposite = words_counter(col = df[df.rating == abs(score-1)]['target_column'])
+        common_no_stopwords = set(word_counter_df['word']).intersection(set(word_counter_df_opposite['word']))
+        common_list = list(common_no_stopwords)
+    
+        unique_words = word_counter_df[word_counter_df['word'].isin(common_list) == False][:nb_words]
+        fig2 = px.treemap(unique_words, 
+                          path=['word'], 
+                          values='freq', 
+                          title='{nb} most Unique used words in {txt} reviews'.format(nb = str(nb_words), txt = score_label), 
+                          color='freq',
+                          color_continuous_scale='GnBu')
+        st.plotly_chart(fig2)
+    
+    st.markdown("---") 
+    st.markdown("***Visualization of words analysis for each category of comments***")
+    output_selectbox = st.selectbox('Select which category of comment you want to display', ['Positive', 'Negative'])
+    output_slider = st.slider('Number of words to display', 10, 100, 20)
+    output_multiselect = st.multiselect('Select type of TAG to displpay ', ['ADV', 'ADJ', 'NOUN', 'VERB'])
+    show_tree_map(df=df1_fr, nb_words=output_slider, score_label=output_selectbox, pos_tag=output_multiselect)
     
 ###############    DATA PROCESSING
 elif rad == "Data processing":  
@@ -983,6 +1109,41 @@ elif rad == "Conclusion & Perspectives":
                 ">- Finally we focused on the reviews written in French as they represented more than 89% of our dataset, it would be interesting to collect more reviews that are in the top 5 languages.  \n"
                 "In a nutshell, this project is just the beginning of a bigger AI application and, with further development effort, could spark off the interest of retail companies.")
     
+    df_netx = pd.read_csv('df_relationship_final_postag.csv',index_col=0)
+    df_netx.rename(columns={'word': 'sub_category'}, inplace=True)
     
+    # Function ensuring vizualisation of Relationship
+    def relationship_chart(source):
+        G = nx.from_pandas_edgelist(source, source = "main_category", target="sub_category", edge_attr="value", create_using = nx.Graph())
+        communities = best_partition(G)
+        nx.set_node_attributes(G, communities, 'group')
+        com_net = Network(notebook=True, width="700px", height="700px", bgcolor="#222222", font_color='white')
+        com_net.from_nx(G)
+        com_net.show("mapping.html")
+        
+        HtmlFile = open("mapping.html", 'r', encoding='utf-8')
+        source_code = HtmlFile.read() 
+        components.html(source_code, height = 900,width=900)
+        
+    st.markdown("---")    
+    check =  st.checkbox('Example of visualization of main & sub categories using NetworkX and POS tagging')
+    if check:
+        radio_options=['Verbs', 'Nouns', 'Adverbs']
+        radio_status = st.radio("Select which POS tagging to see visualization of categories of comments:", radio_options)
+    
+        if (radio_status == 'Verbs'):
+            df_nx = df_netx[df_netx.tag == 'VERB']
+            df_nx = df_nx.head(150)
+            relationship_chart(df_nx)
+        
+        elif (radio_status == 'Nouns'):
+            df_nx = df_netx[df_netx.tag == 'NOUN']
+            df_nx = df_nx.head(150)
+            relationship_chart(df_nx)
+        
+        elif (radio_status == 'Adverbs'):
+            df_nx = df_netx[df_netx.tag == 'ADV']
+            df_nx = df_nx.head(150)
+            relationship_chart(df_nx)
     
 
