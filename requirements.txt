@@ -5,7 +5,7 @@ seaborn
 plotly
 datetime
 scikit-plot
-catboost
 joblib
 scipy
 sklearn
+tensorflow
