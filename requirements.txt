@@ -12,3 +12,4 @@ networkx
 wordcloud
 pyvis
 python-louvain
+catboost
