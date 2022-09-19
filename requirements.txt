@@ -11,8 +11,7 @@ sklearn
 networkx
 wordcloud
 pyvis.network
-collections
 community.community_louvain
 streamlit.components.v1
 sklearn.feature_extraction.text
-
+collections
