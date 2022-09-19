@@ -13,7 +13,6 @@ wordcloud
 pyvis.network
 collections
 community.community_louvain
-stramlit
 streamlit.components.v1
 sklearn.feature_extraction.text
 
