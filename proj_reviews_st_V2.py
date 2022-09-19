@@ -36,6 +36,7 @@ from community.community_louvain import best_partition
 import streamlit.components.v1 as components
 import collections
 from wordcloud import WordCloud
+from sklearn.feature_extraction.text import CountVectorizer
 
 
 #Creation of a dataframe with with the data from the file "reviews_trust.csv":
@@ -627,9 +628,9 @@ elif rad == "Explorative Data Analysis":
     
     st.markdown("---") 
     st.markdown("***Visualization of words analysis for each category of comments***")
-    output_selectbox = st.selectbox('Select which category of comment you want to display', ['Positive', 'Negative'])
-    output_slider = st.slider('Number of words to display', 10, 100, 20)
-    output_multiselect = st.multiselect('Select type of TAG to displpay ', ['ADV', 'ADJ', 'NOUN', 'VERB'])
+    output_selectbox = st.selectbox('Select which category of comment you want to display:', ['Positive', 'Negative'])
+    output_slider = st.slider('Number of words to display:', 10, 100, 20)
+    output_multiselect = st.multiselect('Select type of TAG to display: ', ['ADV', 'ADJ', 'NOUN', 'VERB'])
     show_tree_map(df=df1_fr, nb_words=output_slider, score_label=output_selectbox, pos_tag=output_multiselect)
     
 ###############    DATA PROCESSING
