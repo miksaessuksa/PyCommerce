@@ -24,7 +24,7 @@ from sklearn.metrics import f1_score, precision_score,recall_score
 from sklearn.model_selection import train_test_split
 #from sklearn.linear_model import LogisticRegression    
 from sklearn.metrics import plot_confusion_matrix, plot_roc_curve
-from catboost import CatBoostClassifier
+#from catboost import CatBoostClassifier
     #from sklearn.svm import SVC
 from scipy.sparse import hstack
 import joblib
