@@ -30,6 +30,15 @@ from scipy.sparse import hstack
 import joblib
 from sklearn.feature_selection import SelectKBest
 
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
+from tensorflow.keras.layers import Input
+from keras.models import Model
+from keras.layers import Bidirectional
+from keras.models import Sequential,model_from_json
+from keras.layers import Embedding
+from tensorflow.keras.models import save_model,load_model
 
 #Creation of a dataframe with with the data from the file "reviews_trust.csv":
 df=pd.read_csv('reviews_trust.csv', index_col=0)
