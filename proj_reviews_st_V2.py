@@ -20,7 +20,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.metrics import f1_score, precision_score,recall_score
-from catboost import CatBoostClassifier
+
 from sklearn.model_selection import train_test_split
 #from sklearn.linear_model import LogisticRegression    
 from sklearn.metrics import plot_confusion_matrix, plot_roc_curve
