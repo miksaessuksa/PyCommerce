@@ -909,7 +909,7 @@ elif rad == "Evaluation":
         
         if 'Confusion Matrix' in metrics:
         #confusion matrix
-            st.markdown("#### Confusion matrix for Dense Neural Network:") 
+            st.markdown("Confusion matrix for Dense Neural Network:") 
             img = Image.open('DNN_cm.png')
             st.image(img, caption=None, width=None, use_column_width=None, clamp=False, channels="RGB", output_format="auto")
         
@@ -933,7 +933,7 @@ elif rad == "Evaluation":
         
         if 'Confusion Matrix' in metrics:
         #confusion matrix
-            st.markdown("#### Confusion matrix for Dense Neural Network - fastText:") 
+            st.markdown("Confusion matrix for Dense Neural Network - fastText:") 
             img = Image.open('DNN_ft_cm.png')
             st.image(img, caption=None, width=None, use_column_width=None, clamp=False, channels="RGB", output_format="auto")
        
@@ -943,7 +943,7 @@ elif rad == "Evaluation":
         else:
             #classification report
             class_rep_DNN_ft = pd.read_csv('class_rep_DNN_lem_ft.csv', index_col=0)
-            st.markdown("#### Classification report for Dense Neural Network - fastText:") 
+            st.markdown("Classification report for Dense Neural Network - fastText:") 
             st.write (class_rep_DNN_ft)
 
   
