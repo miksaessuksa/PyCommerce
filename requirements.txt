@@ -12,5 +12,4 @@ networkx
 wordcloud
 pyvis.network
 community
-sklearn.feature_extraction.text
 collections
