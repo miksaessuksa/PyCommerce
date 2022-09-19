@@ -658,8 +658,9 @@ elif rad == "Modeling":
     st.header('Modeling')
     st.subheader('Data preparation')
     st.markdown("We used the lemmatized reviews, alone, or in combination with features that were highly correlated with the sentiment (word, sentence and negation counts, source).  \n")
-    st.markdown ("Since machine learning algorithms cannot process text directly, the text needs to be converted into numbers, or more precisely vectors of numbers. We used a popular and simple method of feature extraction with text data, called the **bag-of-words (BOW)**. It is a representation of text that describes the occurrence of words within a text. To reduce the dimensionality of the resulting matrix, it is usually preceded by a step of text preprocessing, as described in the previous part.  \n"
-    "We used an advanced variant of the BOW that used the **term frequency–inverse document frequency (or Tf–Idf)**. Basically, the value of a word increases proportionally to count, but it is inversely proportional to the frequency of the word in the text. We used the text cleaned and lemmatized to feed the Tf-Idf.")
+    st.markdown ("Since machine learning algorithms cannot process text directly, the reviews need to be converted into numbers, or more precisely vectors of numbers. We used a popular and simple method of feature extraction with text data, called the **bag-of-words (BOW)**. It is a representation of text that describes the occurrence of words within a text. To reduce the dimensionality of the resulting matrix, it is usually preceded by a step of text preprocessing, as described in the previous part.  \n"
+    "We used an advanced variant of the BOW that used the **term frequency–inverse document frequency (or Tf–Idf)**. Basically, the value of a word increases proportionally to count, but it is inversely proportional to the frequency of the word in the text. We used the text cleaned and lemmatized to feed the Tf-Idf."  \n
+    "We also tried to improve the models performance by defining a pipeline that allowed us to select the best features and the best hyperparameters.")
     st.subheader('Machine Learning and Deep Learning models')
     st.markdown("We predicted the sentiment (positive or negative) of reviews with 4 classification  models,  namely :  \n"
                 ">- **Gradient Boosting**  \n"
@@ -668,8 +669,8 @@ elif rad == "Modeling":
                 ">- **Support Vector Machine (SVM)**  \n")
     img = Image.open('modeling2.png')
     st.image(img, caption=None, width=None, use_column_width=None, clamp=False, channels="RGB", output_format="auto")
-    st.write("As for deep learning models we used dense neural networks including an embeddding layer and a MaxPooling step followed by a dense layer wit a ReLU function and a last dense layer with a sigmoid activation function. Only the comments were used as inputs (Lemma).  \n"
-                "We also tried to use a **fastText** pre-trained model to create an embedding matrix to initialize the embedding layer. [FastText] (https://fasttext.cc/) is an open-source library, developed by the Facebook AI Research lab and has proven to be very efficient on many NLP problems, such as semantic similarity detection and text classification.")   
+    st.write("As for the deep learning models we used a dense neural network including an embeddding layer, a MaxPooling layer and two dense layers. Only the reviews were used as inputs (Lemma).  \n"
+                "We also incorporated a **fastText** pre-trained model to create an embedding matrix so as to initialize the embedding layer. [FastText] (https://fasttext.cc/) is an open-source library, developed by the Facebook AI Research lab and has proven to be very efficient on many NLP problems, such as semantic similarity detection and text classification.")   
     
    
     
