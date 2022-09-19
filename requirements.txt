@@ -11,4 +11,4 @@ sklearn
 networkx
 wordcloud
 pyvis.network
-community
+pyhton-louvain
