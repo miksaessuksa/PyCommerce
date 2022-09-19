@@ -35,6 +35,7 @@ from pyvis.network import Network
 from community.community_louvain import best_partition
 import streamlit.components.v1 as components
 import collections
+from wordcloud import WordCloud
 
 
 #Creation of a dataframe with with the data from the file "reviews_trust.csv":
