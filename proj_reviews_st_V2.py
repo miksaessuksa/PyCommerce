@@ -557,7 +557,7 @@ elif rad == "Evaluation":
         #@st.cache(allow_output_mutation=True)
         #@st.cache(persist=True)
     #Prep data for ML models:
-    df=pd.read_csv('C:/Users/celin/Documents/cours/formation_DatascienTest_2022_bootcamp/projet_satisfaction_client/feats_minmaxscaled.csv', index_col=0)
+    df=pd.read_csv('feats_minmaxscaled.csv', index_col=0)
     to_keep=['spacy_lemmatized_j','rating','nb_words','negation','sentences_count',"company_ShowRoom","company_VeePee","source_TrustPilot","source_TrustedShop"]
     feats=df[to_keep]
     feats_train, feats_test, y_train, y_test = train_test_split(feats.drop(['rating'], axis=1), feats.rating, test_size=0.2, random_state=49)
@@ -571,10 +571,7 @@ elif rad == "Evaluation":
     X_test = hstack((X_test_text, feats_test.drop('spacy_lemmatized_j', axis=1).values))
 
     class_names = ['Negative', 'Positive']
-    #Prep data for DL models:
-    #Load the data
-    df_we=pd.read_csv('C:/Users/celin/Documents/cours/formation_DatascienTest_2022_bootcamp/projet_satisfaction_client/feats_minmaxscaled.csv', index_col=0)
-
+    
 
     # Definition of function resulting score computation of Algorithm mentionned in parameter
     def scores (model,X_train,y_train,X_test,y_test, y_pred):
@@ -608,7 +605,7 @@ elif rad == "Evaluation":
         st.subheader('Gradient Boosting Results')
         GBC = GradientBoostingClassifier(n_estimators=100, learning_rate=1.0, max_depth=1, random_state=49)
         GBC.fit(X_train, y_train)
-        #GBC = joblib.load("C:/Users/celin/Documents/cours/formation_DatascienTest_2022_bootcamp/projet_satisfaction_client/GBC_model.joblib")
+        #GBC = joblib.load("GBC_model.joblib")
         #accuracy = model.score(X_test, y_test)
         y_pred_GBC = GBC.predict(X_test)
         score_train_GBC, score_test_GBC,precision_GBC,recall_GBC,f1_GBC=scores(GBC,X_train,y_train,X_test,y_test, y_pred_GBC)
@@ -694,7 +691,7 @@ elif rad == "Evaluation":
         metrics = st.sidebar.multiselect('Select your metrics:', ('Confusion Matrix', 'Precision-Recall Curve', 'Classification report'))
         st.sidebar.button('Classify', key='1')
         st.subheader('Logistic Regression Results')
-        LR = joblib.load("C:/Users/celin/Documents/cours/formation_DatascienTest_2022_bootcamp/projet_satisfaction_client/LR_model.joblib")
+        LR = joblib.load("LR_model.joblib")
         #LR = LogisticRegression()
         #LR.fit(X_train, y_train)
         y_pred_LR=LR.predict(X_test)
@@ -738,7 +735,7 @@ elif rad == "Evaluation":
         metrics = st.sidebar.multiselect('Select your metrics:', ('Confusion Matrix', 'Precision-Recall Curve', 'Classification report'))
         st.sidebar.button('Classify', key='1')
         st.subheader('Logistic Regression - Pipeline Results')
-        LR_pipe = joblib.load("C:/Users/celin/Documents/cours/formation_DatascienTest_2022_bootcamp/projet_satisfaction_client/LR_pipe_model.joblib")
+        LR_pipe = joblib.load("LR_pipe_model.joblib")
         #LR_pipe = LogisticRegression(class_weight='balanced', penalty='l2', solver='lbfgs',C=1)
         #LR_pipe.fit(X_train, y_train)
         y_pred_LR_pipe=LR_pipe.predict(X_test)
@@ -783,7 +780,7 @@ elif rad == "Evaluation":
         #CBC =CatBoostClassifier(iterations=100, random_seed=42, )
         #Training and predictions
         #CBC.fit(X_train, y_train)
-        CBC = joblib.load("C:/Users/celin/Documents/cours/formation_DatascienTest_2022_bootcamp/projet_satisfaction_client/CBC_model.joblib")
+        CBC = joblib.load("CBC_model.joblib")
 
         y_pred_CBC=CBC.predict(X_test)
         score_train_CBC, score_test_CBC,precision_CBC,recall_CBC,f1_CBC=scores(CBC,X_train,y_train,X_test,y_test, y_pred_CBC)
@@ -824,7 +821,7 @@ elif rad == "Evaluation":
         metrics = st.sidebar.multiselect('Select your metrics:', ('Confusion Matrix', 'Precision-Recall Curve', 'Classification report'))
         st.sidebar.button('Classify', key='1')
         st.subheader('Support Vector Machine Results')
-        SVC = joblib.load("C:/Users/celin/Documents/cours/formation_DatascienTest_2022_bootcamp/projet_satisfaction_client/SVC_model.joblib")
+        SVC = joblib.load("SVC_model.joblib")
         #SVC=SVC()
         #SVC.fit(X_train, y_train)
         y_pred_SVC=SVC.predict(X_test)
@@ -913,15 +910,15 @@ elif rad == "Evaluation":
         if 'Confusion Matrix' in metrics:
         #confusion matrix
             st.markdown("#### Confusion matrix for Dense Neural Network:") 
-            img = Image.open('C:/Users/celin/Documents/cours/formation_DatascienTest_2022_bootcamp/projet_satisfaction_client/DNN_cm.png')
+            img = Image.open('DNN_cm.png')
             st.image(img, caption=None, width=None, use_column_width=None, clamp=False, channels="RGB", output_format="auto")
         
         if 'Loss/Precision/Accuracy Curves' in metrics:
-            img = Image.open('C:/Users/celin/Documents/cours/formation_DatascienTest_2022_bootcamp/projet_satisfaction_client/DNN_history.png')
+            img = Image.open('DNN_history.png')
             st.image(img, caption=None, width=None, use_column_width=None, clamp=False, channels="RGB", output_format="auto")
         else:
             #classification report
-            class_rep_DNN = pd.read_csv('C:/Users/celin/Documents/cours/formation_DatascienTest_2022_bootcamp/projet_satisfaction_client/class_rep_DNN.csv', index_col=0)
+            class_rep_DNN = pd.read_csv('class_rep_DNN.csv', index_col=0)
             st.markdown("Classification report for Dense Neural Network:") 
             st.write (class_rep_DNN)
 
@@ -937,15 +934,15 @@ elif rad == "Evaluation":
         if 'Confusion Matrix' in metrics:
         #confusion matrix
             st.markdown("#### Confusion matrix for Dense Neural Network - fastText:") 
-            img = Image.open('C:/Users/celin/Documents/cours/formation_DatascienTest_2022_bootcamp/projet_satisfaction_client/DNN_ft_cm.png')
+            img = Image.open('DNN_ft_cm.png')
             st.image(img, caption=None, width=None, use_column_width=None, clamp=False, channels="RGB", output_format="auto")
        
         if 'Loss/Precision/Accuracy Curves' in metrics:
-            img = Image.open('C:/Users/celin/Documents/cours/formation_DatascienTest_2022_bootcamp/projet_satisfaction_client/DNN_ft_history.png')
+            img = Image.open('DNN_ft_history.png')
             st.image(img, caption=None, width=None, use_column_width=None, clamp=False, channels="RGB", output_format="auto")
         else:
             #classification report
-            class_rep_DNN_ft = pd.read_csv('C:/Users/celin/Documents/cours/formation_DatascienTest_2022_bootcamp/projet_satisfaction_client/class_rep_DNN_lem_ft.csv', index_col=0)
+            class_rep_DNN_ft = pd.read_csv('class_rep_DNN_lem_ft.csv', index_col=0)
             st.markdown("#### Classification report for Dense Neural Network - fastText:") 
             st.write (class_rep_DNN_ft)
 
@@ -958,7 +955,7 @@ elif rad == "Conclusion & Perspectives":
     if st.button('Click if you want to see the scoring metrics for all models tested'):
 
         #Display dataframe of all scores
-        df_all_scores=pd.read_csv('C:/Users/celin/Documents/cours/formation_DatascienTest_2022_bootcamp/projet_satisfaction_client/df_all_scores.csv', index_col=0)
+        df_all_scores=pd.read_csv('df_all_scores.csv', index_col=0)
         st.markdown("Performance results for all models")
         st.write(df_all_scores)
     #Visualization (barplot) of the scores obtained for the different models:
