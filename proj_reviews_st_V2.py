@@ -30,15 +30,6 @@ from scipy.sparse import hstack
 import joblib
 from sklearn.feature_selection import SelectKBest
 
-import tensorflow as tf
-from tensorflow import keras
-from tensorflow.keras import layers
-from tensorflow.keras.layers import Input
-from keras.models import Model
-from keras.layers import Bidirectional
-from keras.models import Sequential,model_from_json
-from keras.layers import Embedding
-from tensorflow.keras.models import save_model,load_model
 
 #Creation of a dataframe with with the data from the file "reviews_trust.csv":
 df=pd.read_csv('reviews_trust.csv', index_col=0)
@@ -566,7 +557,7 @@ elif rad == "Evaluation":
         #@st.cache(allow_output_mutation=True)
         #@st.cache(persist=True)
     #Prep data for ML models:
-    df=pd.read_csv('feats_minmaxscaled.csv', index_col=0)
+    df=pd.read_csv('C:/Users/celin/Documents/cours/formation_DatascienTest_2022_bootcamp/projet_satisfaction_client/feats_minmaxscaled.csv', index_col=0)
     to_keep=['spacy_lemmatized_j','rating','nb_words','negation','sentences_count',"company_ShowRoom","company_VeePee","source_TrustPilot","source_TrustedShop"]
     feats=df[to_keep]
     feats_train, feats_test, y_train, y_test = train_test_split(feats.drop(['rating'], axis=1), feats.rating, test_size=0.2, random_state=49)
@@ -582,35 +573,8 @@ elif rad == "Evaluation":
     class_names = ['Negative', 'Positive']
     #Prep data for DL models:
     #Load the data
-    df_we=pd.read_csv('feats_minmaxscaled.csv', index_col=0)
+    df_we=pd.read_csv('C:/Users/celin/Documents/cours/formation_DatascienTest_2022_bootcamp/projet_satisfaction_client/feats_minmaxscaled.csv', index_col=0)
 
-    #Select the features
-    to_keep2=['rating','spacy_lemmatized_j']
-    df_we=df_we[to_keep2]
-    
-    #Split the data into a training and validation set
-    X_train2, X_test2, y_train2, y_test2 = train_test_split(df_we.spacy_lemmatized_j, df_we.rating, test_size=0.2, random_state=49,shuffle=True)
-    #Prepare tokenizer
-    tokenizer = tokenizer = tf.keras.preprocessing.text.Tokenizer(num_words=15000) 
-    #Update internal vocabulary based on the texts in the training set
-    tokenizer.fit_on_texts(X_train2)
-    #Dictionnary word:index
-    word2idx = tokenizer.word_index 
-#Dictionnary index:words
-    idx2word = tokenizer.index_word 
-
-#Retrieve size of the dictionnary
-    vocab_size = tokenizer.num_words
-    #Retrieve the maximum text length
-    max_len = np.max([len(text.split()) for text in X_train2])  #520
-
-#Convert texts into an int sequence
-    X_train_seq=tokenizer.texts_to_sequences(X_train2)
-    X_test_seq = tokenizer.texts_to_sequences(X_test2)
-
-# Pad documents to a max length 
-    X_train_NN = tf.keras.preprocessing.sequence.pad_sequences(X_train_seq, maxlen=max_len,padding="post")
-    X_test_NN = tf.keras.preprocessing.sequence.pad_sequences(X_test_seq, maxlen=max_len,padding="post")
 
     # Definition of function resulting score computation of Algorithm mentionned in parameter
     def scores (model,X_train,y_train,X_test,y_test, y_pred):
@@ -644,7 +608,7 @@ elif rad == "Evaluation":
         st.subheader('Gradient Boosting Results')
         GBC = GradientBoostingClassifier(n_estimators=100, learning_rate=1.0, max_depth=1, random_state=49)
         GBC.fit(X_train, y_train)
-        #GBC = joblib.load("GBC_model.joblib")
+        #GBC = joblib.load("C:/Users/celin/Documents/cours/formation_DatascienTest_2022_bootcamp/projet_satisfaction_client/GBC_model.joblib")
         #accuracy = model.score(X_test, y_test)
         y_pred_GBC = GBC.predict(X_test)
         score_train_GBC, score_test_GBC,precision_GBC,recall_GBC,f1_GBC=scores(GBC,X_train,y_train,X_test,y_test, y_pred_GBC)
@@ -730,7 +694,7 @@ elif rad == "Evaluation":
         metrics = st.sidebar.multiselect('Select your metrics:', ('Confusion Matrix', 'Precision-Recall Curve', 'Classification report'))
         st.sidebar.button('Classify', key='1')
         st.subheader('Logistic Regression Results')
-        LR = joblib.load("LR_model.joblib")
+        LR = joblib.load("C:/Users/celin/Documents/cours/formation_DatascienTest_2022_bootcamp/projet_satisfaction_client/LR_model.joblib")
         #LR = LogisticRegression()
         #LR.fit(X_train, y_train)
         y_pred_LR=LR.predict(X_test)
@@ -774,7 +738,7 @@ elif rad == "Evaluation":
         metrics = st.sidebar.multiselect('Select your metrics:', ('Confusion Matrix', 'Precision-Recall Curve', 'Classification report'))
         st.sidebar.button('Classify', key='1')
         st.subheader('Logistic Regression - Pipeline Results')
-        LR_pipe = joblib.load("LR_pipe_model.joblib")
+        LR_pipe = joblib.load("C:/Users/celin/Documents/cours/formation_DatascienTest_2022_bootcamp/projet_satisfaction_client/LR_pipe_model.joblib")
         #LR_pipe = LogisticRegression(class_weight='balanced', penalty='l2', solver='lbfgs',C=1)
         #LR_pipe.fit(X_train, y_train)
         y_pred_LR_pipe=LR_pipe.predict(X_test)
@@ -819,7 +783,7 @@ elif rad == "Evaluation":
         #CBC =CatBoostClassifier(iterations=100, random_seed=42, )
         #Training and predictions
         #CBC.fit(X_train, y_train)
-        CBC = joblib.load("CBC_model.joblib")
+        CBC = joblib.load("C:/Users/celin/Documents/cours/formation_DatascienTest_2022_bootcamp/projet_satisfaction_client/CBC_model.joblib")
 
         y_pred_CBC=CBC.predict(X_test)
         score_train_CBC, score_test_CBC,precision_CBC,recall_CBC,f1_CBC=scores(CBC,X_train,y_train,X_test,y_test, y_pred_CBC)
@@ -860,7 +824,7 @@ elif rad == "Evaluation":
         metrics = st.sidebar.multiselect('Select your metrics:', ('Confusion Matrix', 'Precision-Recall Curve', 'Classification report'))
         st.sidebar.button('Classify', key='1')
         st.subheader('Support Vector Machine Results')
-        SVC = joblib.load("SVC_model.joblib")
+        SVC = joblib.load("C:/Users/celin/Documents/cours/formation_DatascienTest_2022_bootcamp/projet_satisfaction_client/SVC_model.joblib")
         #SVC=SVC()
         #SVC.fit(X_train, y_train)
         y_pred_SVC=SVC.predict(X_test)
@@ -902,7 +866,7 @@ elif rad == "Evaluation":
         metrics = st.sidebar.multiselect('Select your metrics:', ('Confusion Matrix', 'Precision-Recall Curve', 'Classification report'))
         st.sidebar.button('Classify', key='1')
         st.subheader('Support Vector Machine -Pipeline Results')
-        SVC_pipe = joblib.load("SVC_pipe_model.joblib")
+        SVC_pipe = joblib.load("C:/Users/celin/Documents/cours/formation_DatascienTest_2022_bootcamp/projet_satisfaction_client/SVC_pipe_model.joblib")
         y_pred_SVC_pipe=SVC_pipe.predict(X_test)
         score_train_SVC_pipe, score_test_SVC_pipe, precision_SVC_pipe, recall_SVC_pipe, f1_SVC_pipe=scores(SVC_pipe,X_train,y_train,X_test,y_test, y_pred_SVC_pipe)
         #accuracy = model.score(X_test, y_test)
@@ -942,38 +906,22 @@ elif rad == "Evaluation":
         metrics = st.sidebar.multiselect('Select your metrics:', ('Confusion Matrix', 'Loss/Precision/Accuracy Curves', 'Classification report'))
         st.sidebar.button('Classify', key='1')
         st.subheader('Dense Neural Network Results')
-        DNN = load_model("DNN_model.h5")
-        #json_file = open('model.json', 'r')
-        #loaded_model_json = json_file.read()
-        #json_file.close()
-        #DNN = model_from_json(loaded_model_json)
-        y_pred_DNN = DNN.predict(X_test_NN)
-        loss_DNN, accuracy_DNN,precision_DNN, recall_DNN=DNN.evaluate(X_test_NN, y_test.values, batch_size=64)
-        st.write('Accuracy: ', round(accuracy_DNN, 2)*100,'%')
-        st.write('Precision: ', round(precision_DNN,2))
-        st.write('Recall: ', round(recall_DNN,2))
+        st.write('Accuracy: ', 0.89*100,'%')
+        st.write('Precision: ', 91.81)
+        st.write('Recall: ', 87.49)
         
         if 'Confusion Matrix' in metrics:
         #confusion matrix
             st.markdown("#### Confusion matrix for Dense Neural Network:") 
-            confusion_matrix=confusion_matrix(y_test2,y_pred_DNN.round())
-            col1, col2, col3= st.columns([1,2, 1])
-            with col2:
-                fig, ax = plt.subplots(figsize=(3, 3))
-                ax.matshow(confusion_matrix, cmap=plt.cm.Blues, alpha=0.3)
-                for i in range(confusion_matrix.shape[0]):
-                    for j in range(confusion_matrix.shape[1]):
-                        ax.text(x=j, y=i,s=confusion_matrix[i, j], va='center', ha='center', size='xx-large')
-                plt.xlabel('Predictions', fontsize=10)
-                plt.ylabel('Actuals', fontsize=10)
-                plt.title('Confusion Matrix', fontsize=10)
-                st.pyplot(fig)
+            img = Image.open('C:/Users/celin/Documents/cours/formation_DatascienTest_2022_bootcamp/projet_satisfaction_client/DNN_cm.png')
+            st.image(img, caption=None, width=None, use_column_width=None, clamp=False, channels="RGB", output_format="auto")
+        
         if 'Loss/Precision/Accuracy Curves' in metrics:
-            img = Image.open('DNN_history.png')
+            img = Image.open('C:/Users/celin/Documents/cours/formation_DatascienTest_2022_bootcamp/projet_satisfaction_client/DNN_history.png')
             st.image(img, caption=None, width=None, use_column_width=None, clamp=False, channels="RGB", output_format="auto")
         else:
             #classification report
-            class_rep_DNN = pd.read_csv('class_rep_DNN.csv', index_col=0)
+            class_rep_DNN = pd.read_csv('C:/Users/celin/Documents/cours/formation_DatascienTest_2022_bootcamp/projet_satisfaction_client/class_rep_DNN.csv', index_col=0)
             st.markdown("Classification report for Dense Neural Network:") 
             st.write (class_rep_DNN)
 
@@ -982,10 +930,6 @@ elif rad == "Evaluation":
         metrics = st.sidebar.multiselect('Select your metrics:', ('Confusion Matrix', 'Loss/Precision/Accuracy Curves', 'Classification report'))
         st.sidebar.button('Classify', key='1')
         st.subheader('Dense Neural Network Results')
-        #json_file = open('model.json', 'r')
-        #loaded_model_json = json_file.read()
-        #json_file.close()
-        #DNN = model_from_json(loaded_model_json)
         st.write('Accuracy: ', 0.89*100,'%')
         st.write('Precision: ', 0.92)
         st.write('Recall: 0.88', 0.88)
@@ -993,15 +937,15 @@ elif rad == "Evaluation":
         if 'Confusion Matrix' in metrics:
         #confusion matrix
             st.markdown("#### Confusion matrix for Dense Neural Network - fastText:") 
-            img = Image.open('DNN_ft_cm.png')
+            img = Image.open('C:/Users/celin/Documents/cours/formation_DatascienTest_2022_bootcamp/projet_satisfaction_client/DNN_ft_cm.png')
             st.image(img, caption=None, width=None, use_column_width=None, clamp=False, channels="RGB", output_format="auto")
        
         if 'Loss/Precision/Accuracy Curves' in metrics:
-            img = Image.open('DNN_ft_history.png')
+            img = Image.open('C:/Users/celin/Documents/cours/formation_DatascienTest_2022_bootcamp/projet_satisfaction_client/DNN_ft_history.png')
             st.image(img, caption=None, width=None, use_column_width=None, clamp=False, channels="RGB", output_format="auto")
         else:
             #classification report
-            class_rep_DNN_ft = pd.read_csv('class_rep_DNN_lem_ft.csv', index_col=0)
+            class_rep_DNN_ft = pd.read_csv('C:/Users/celin/Documents/cours/formation_DatascienTest_2022_bootcamp/projet_satisfaction_client/class_rep_DNN_lem_ft.csv', index_col=0)
             st.markdown("#### Classification report for Dense Neural Network - fastText:") 
             st.write (class_rep_DNN_ft)
 
