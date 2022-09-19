@@ -601,7 +601,7 @@ elif rad == "Evaluation":
         
     if classifier == 'Gradient Boosting':
         metrics = st.sidebar.multiselect('Select your metrics:', ('Confusion Matrix', 'Precision-Recall Curve', 'Classification report'))
-        st.sidebar.button('Classify', key='1')
+        #st.sidebar.button('Classify', key='1')
         st.subheader('Gradient Boosting Results')
         GBC = GradientBoostingClassifier(n_estimators=100, learning_rate=1.0, max_depth=1, random_state=49)
         GBC.fit(X_train, y_train)
@@ -642,7 +642,7 @@ elif rad == "Evaluation":
             
     if classifier == 'Gradient Boosting - Pipeline':
         metrics = st.sidebar.multiselect('Select your metrics:', ('Confusion Matrix', 'Precision-Recall Curve', 'Classification report'))
-        st.sidebar.button('Classify', key='1')
+        #st.sidebar.button('Classify', key='1')
         st.subheader('Gradient Boosting - Pipeline Results')
         sel = SelectKBest( k=3000)
         sel.fit(X_train,y_train)
@@ -689,7 +689,7 @@ elif rad == "Evaluation":
     elif classifier == 'Logistic Regression':
     
         metrics = st.sidebar.multiselect('Select your metrics:', ('Confusion Matrix', 'Precision-Recall Curve', 'Classification report'))
-        st.sidebar.button('Classify', key='1')
+        #st.sidebar.button('Classify', key='1')
         st.subheader('Logistic Regression Results')
         LR = joblib.load("LR_model.joblib")
         #LR = LogisticRegression()
@@ -733,7 +733,7 @@ elif rad == "Evaluation":
     elif classifier == 'Logistic Regression - Pipeline':
     
         metrics = st.sidebar.multiselect('Select your metrics:', ('Confusion Matrix', 'Precision-Recall Curve', 'Classification report'))
-        st.sidebar.button('Classify', key='1')
+        #st.sidebar.button('Classify', key='1')
         st.subheader('Logistic Regression - Pipeline Results')
         LR_pipe = joblib.load("LR_pipe_model.joblib")
         #LR_pipe = LogisticRegression(class_weight='balanced', penalty='l2', solver='lbfgs',C=1)
@@ -775,7 +775,7 @@ elif rad == "Evaluation":
 
     elif classifier == 'CatBoost':
         metrics = st.sidebar.multiselect('Select your metrics:', ('Confusion Matrix', 'Precision-Recall Curve', 'Classification report'))
-        st.sidebar.button('Classify', key='1')
+        #st.sidebar.button('Classify', key='1')
         st.subheader('CatBoost Results')
         #CBC =CatBoostClassifier(iterations=100, random_seed=42, )
         #Training and predictions
@@ -819,7 +819,7 @@ elif rad == "Evaluation":
     elif classifier == 'Support Vector Machine':
     
         metrics = st.sidebar.multiselect('Select your metrics:', ('Confusion Matrix', 'Precision-Recall Curve', 'Classification report'))
-        st.sidebar.button('Classify', key='1')
+        #st.sidebar.button('Classify', key='1')
         st.subheader('Support Vector Machine Results')
         SVC = joblib.load("SVC_model.joblib")
         #SVC=SVC()
@@ -861,7 +861,7 @@ elif rad == "Evaluation":
     elif classifier == 'Support Vector Machine - Pipeline':
     
         metrics = st.sidebar.multiselect('Select your metrics:', ('Confusion Matrix', 'Precision-Recall Curve', 'Classification report'))
-        st.sidebar.button('Classify', key='1')
+        #st.sidebar.button('Classify', key='1')
         st.subheader('Support Vector Machine -Pipeline Results')
         SVC_pipe = joblib.load("C:/Users/celin/Documents/cours/formation_DatascienTest_2022_bootcamp/projet_satisfaction_client/SVC_pipe_model.joblib")
         y_pred_SVC_pipe=SVC_pipe.predict(X_test)
@@ -901,7 +901,7 @@ elif rad == "Evaluation":
     
     elif classifier == 'Dense Neural Network':
         metrics = st.sidebar.multiselect('Select your metrics:', ('Confusion Matrix', 'Loss/Precision/Accuracy Curves', 'Classification report'))
-        st.sidebar.button('Classify', key='1')
+        #st.sidebar.button('Classify', key='1')
         st.subheader('Dense Neural Network Results')
         st.write('Accuracy: ', 0.89*100,'%')
         st.write('Precision: ', 91.81)
@@ -925,7 +925,7 @@ elif rad == "Evaluation":
 
     elif classifier == 'Dense Neural Network - fastText':
         metrics = st.sidebar.multiselect('Select your metrics:', ('Confusion Matrix', 'Loss/Precision/Accuracy Curves', 'Classification report'))
-        st.sidebar.button('Classify', key='1')
+        #st.sidebar.button('Classify', key='1')
         st.subheader('Dense Neural Network Results')
         st.write('Accuracy: ', 0.89*100,'%')
         st.write('Precision: ', 0.92)
