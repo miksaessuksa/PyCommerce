@@ -83,7 +83,7 @@ if rad == "Project presentation":
     st.markdown(">- **Exploratory Data Analysis (EDA)**: a mandatory step to comprehend and understand our datase (descriptive data, correlation between variables, data cleaning, visualization graphs...) ")
     st.markdown(">- **Data preprocessing**: NLP methods require to transform raw data (comments) in usable and workable data (tokenization, stemming, regular expression...).")
     st.markdown(">- **Modeling**: training machine learning and deep learning models and interpreting results.")
-    st.markdown(">- **Predictions**: test driving the model chosen upon selection criteria (interpretability & performances).")
+    st.markdown(">- **Evaluation**: test driving the model chosen upon selection criteria (interpretability & performances).")
 
 
 
