@@ -748,7 +748,7 @@ elif rad == "Evaluation":
             Confusion_matrix('Gradient Boosting confusion matrix',y_test, y_pred_GBC)
              
 
-        if 'Precision-Recall Curve' in metrics:
+        elif 'Precision-Recall Curve' in metrics:
             y_score = GBC.predict_proba(X_test)[:, 1]
             #calculate precision and recall
             precision, recall, thresholds = precision_recall_curve(y_test, y_score)
@@ -764,7 +764,7 @@ elif rad == "Evaluation":
                 ax.set_ylabel('Precision')
                 ax.set_xlabel('Recall')
                 st.pyplot(fig)
-        else:
+        elif 'Classification report' in metrics:
             
             class_rep_GBC=pd.DataFrame(classification_report(y_test, y_pred_GBC, output_dict=True))
             st.markdown("Classification report for GradientBoosting Classifier:") 
@@ -793,7 +793,7 @@ elif rad == "Evaluation":
             Confusion_matrix('Gradient Boosting - Pipeline confusion matrix',y_test, y_pred_GBC_pipe)
              
 
-        if 'Precision-Recall Curve' in metrics:
+        elif 'Precision-Recall Curve' in metrics:
             y_score = GBC_pipe.predict_proba(X_test_sel)[:, 1]
             #calculate precision and recall
             precision, recall, thresholds = precision_recall_curve(y_test, y_score)
@@ -810,7 +810,7 @@ elif rad == "Evaluation":
                 ax.set_ylabel('Precision')
                 ax.set_xlabel('Recall')
                 st.pyplot(fig)
-        else:
+        elif 'Classification report' in metrics::
                 
                 class_rep_GBC_pipe=pd.DataFrame(classification_report(y_test, y_pred_GBC_pipe, output_dict=True))
                 st.markdown("Classification report for GradientBoostingClassifier - Pipeline:") 
@@ -838,7 +838,7 @@ elif rad == "Evaluation":
             Confusion_matrix ("Logistic Regression Classifier Confusion Matrix ",y_test, y_pred_LR)
              
 
-        if 'Precision-Recall Curve' in metrics:
+        elif 'Precision-Recall Curve' in metrics:
             y_score = LR.predict_proba(X_test)[:, 1]
             #calculate precision and recall
             precision, recall, thresholds = precision_recall_curve(y_test, y_score)
@@ -854,7 +854,8 @@ elif rad == "Evaluation":
                 ax.set_ylabel('Precision')
                 ax.set_xlabel('Recall')
                 st.pyplot(fig)
-        else:
+                
+        elif 'Classification report' in metrics::
             
             class_rep_LR=pd.DataFrame(classification_report(y_test, y_pred_LR, output_dict=True)).round(3)
             st.markdown("Classification report for Logistic Regression Classifier:") 
@@ -881,7 +882,7 @@ elif rad == "Evaluation":
             Confusion_matrix ("Logistic Regression - Pipeline Classifier Confusion Matrix ",y_test, y_pred_LR_pipe)
              
 
-        if 'Precision-Recall Curve' in metrics:
+        elif 'Precision-Recall Curve' in metrics:
             y_score = LR_pipe.predict_proba(X_test)[:, 1]
             #calculate precision and recall
             precision, recall, thresholds = precision_recall_curve(y_test, y_score)
@@ -897,7 +898,8 @@ elif rad == "Evaluation":
                 ax.set_ylabel('Precision')
                 ax.set_xlabel('Recall')
                 st.pyplot(fig)
-        else:
+                
+        elif 'Classification report' in metrics:
             
             class_rep_LR_pipe=pd.DataFrame(classification_report(y_test, y_pred_LR_pipe, output_dict=True)).round(3)
             st.markdown("Classification report for Logistic Regression - Pipeline Classifier:") 
@@ -923,7 +925,7 @@ elif rad == "Evaluation":
             Confusion_matrix ("CatBoost Classifier Confusion Matrix ",y_test, y_pred_CBC)
              
 
-        if 'Precision-Recall Curve' in metrics:
+        elif 'Precision-Recall Curve' in metrics:
             y_score = CBC.predict_proba(X_test)[:, 1]
             #calculate precision and recall
             precision, recall, thresholds = precision_recall_curve(y_test, y_score)
@@ -939,7 +941,7 @@ elif rad == "Evaluation":
                 ax.set_ylabel('Precision')
                 ax.set_xlabel('Recall')
                 st.pyplot(fig)
-        else:
+        elif 'Classification report' in metrics:
             
             class_rep_CBC=pd.DataFrame(classification_report(y_test, y_pred_CBC, output_dict=True)).round(3)
             st.markdown("Classification report for  CatBoost Classifier:") 
@@ -966,7 +968,7 @@ elif rad == "Evaluation":
 
             Confusion_matrix ("Support Vector Machine Classifier Confusion Matrix  ",y_test, y_pred_SVC)             
 
-        if 'Precision-Recall Curve' in metrics:
+        elif 'Precision-Recall Curve' in metrics:
             y_score = SVC.predict_proba(X_test)[:, 1]
             #calculate precision and recall
             precision, recall, thresholds = precision_recall_curve(y_test, y_score)
@@ -982,7 +984,7 @@ elif rad == "Evaluation":
                 ax.set_ylabel('Precision')
                 ax.set_xlabel('Recall')
                 st.pyplot(fig)
-        else:
+        elif 'Classification report' in metrics:
             
             class_rep_SVC=pd.DataFrame(classification_report(y_test, y_pred_SVC, output_dict=True)).round(3)
             st.markdown("Classification report for Support Vector Classifier:") 
@@ -1006,7 +1008,7 @@ elif rad == "Evaluation":
 
             Confusion_matrix ("Support Vector Classifier - Pipeline Confusion Matrix  ",y_test, y_pred_SVC_pipe)             
 
-        if 'Precision-Recall Curve' in metrics:
+        elif 'Precision-Recall Curve' in metrics:
             y_score = SVC_pipe.predict_proba(X_test)[:, 1]
             #calculate precision and recall
             precision, recall, thresholds = precision_recall_curve(y_test, y_score)
@@ -1022,7 +1024,8 @@ elif rad == "Evaluation":
                 ax.set_ylabel('Precision')
                 ax.set_xlabel('Recall')
                 st.pyplot(fig)
-        else:
+                
+        elif 'Classification report' in metrics:
             
             class_rep_SVC_pipe=pd.DataFrame(classification_report(y_test, y_pred_SVC_pipe, output_dict=True))
             st.markdown("Classification report for Support Vector Classifier - Pipeline:") 
@@ -1044,10 +1047,11 @@ elif rad == "Evaluation":
             img = Image.open('DNN_cm.png')
             st.image(img, caption=None, width=None, use_column_width=None, clamp=False, channels="RGB", output_format="auto")
         
-        if 'Loss/Precision/Accuracy Curves' in metrics:
+        elif 'Loss/Precision/Accuracy Curves' in metrics:
             img = Image.open('DNN_history.png')
             st.image(img, caption=None, width=None, use_column_width=None, clamp=False, channels="RGB", output_format="auto")
-        else:
+        
+        elif 'Classification report' in metrics:
             #classification report
             class_rep_DNN = pd.read_csv('class_rep_DNN.csv', index_col=0)
             st.markdown("Classification report for Dense Neural Network:") 
@@ -1068,10 +1072,11 @@ elif rad == "Evaluation":
             img = Image.open('DNN_ft_cm.png')
             st.image(img, caption=None, width=None, use_column_width=None, clamp=False, channels="RGB", output_format="auto")
        
-        if 'Loss/Precision/Accuracy Curves' in metrics:
+        elif 'Loss/Precision/Accuracy Curves' in metrics:
             img = Image.open('DNN_ft_history.png')
             st.image(img, caption=None, width=None, use_column_width=None, clamp=False, channels="RGB", output_format="auto")
-        else:
+            
+        elif 'Classification report' in metrics:
             #classification report
             class_rep_DNN_ft = pd.read_csv('class_rep_DNN_lem_ft.csv', index_col=0)
             st.markdown("Classification report for Dense Neural Network - fastText:") 
