@@ -666,7 +666,7 @@ elif rad == "Modeling":
                 ">- [Gradient Boosting](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingClassifier.html)  \n"
                 ">- [CatBoosting](https://catboost.ai/en/docs/)  \n"
                 ">- [Logistic Regression](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html)  \n"
-                ">- [Support Vector Machine (SVM)](https://scikit-learn.org/stable/modules/svm.html?highlight=logistic+regression)  \n"
+                ">- [Support Vector Machine (SVM)](https://scikit-learn.org/stable/modules/svm.html?highlight=logistic+regression)  \n")
     img = Image.open('modeling2.png')
     st.image(img, caption=None, width=None, use_column_width=None, clamp=False, channels="RGB", output_format="auto")
     st.write("As for the deep learning models we used a dense neural network including an embeddding layer, a MaxPooling layer and two dense layers. Only the reviews were used as inputs (Lemma).  \n"
