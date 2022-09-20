@@ -855,7 +855,7 @@ elif rad == "Evaluation":
                 ax.set_xlabel('Recall')
                 st.pyplot(fig)
                 
-        elif 'Classification report' in metrics::
+        elif 'Classification report' in metrics:
             
             class_rep_LR=pd.DataFrame(classification_report(y_test, y_pred_LR, output_dict=True)).round(3)
             st.markdown("Classification report for Logistic Regression Classifier:") 
