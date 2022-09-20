@@ -810,7 +810,7 @@ elif rad == "Evaluation":
                 ax.set_ylabel('Precision')
                 ax.set_xlabel('Recall')
                 st.pyplot(fig)
-        elif 'Classification report' in metrics::
+        elif 'Classification report' in metrics:
                 
                 class_rep_GBC_pipe=pd.DataFrame(classification_report(y_test, y_pred_GBC_pipe, output_dict=True))
                 st.markdown("Classification report for GradientBoostingClassifier - Pipeline:") 
