@@ -1155,9 +1155,9 @@ elif rad == "Conclusion & Perspectives":
 elif rad == "Project team":
     st.title("About Us")
     st.write("This project was led by three data scientists:\n "
-                "\nCeline HERNANDEZ [LinkedIn](https://www.linkedin.com/in/celinehernandez) \n"
+                "\nCeline HERNANDEZ [LinkedIn](https://www.linkedin.com/in/celine-hernandez) \n"
                 "\nPierre KRAUS [LinkedIn](https://www.linkedin.com/in/pierrekraus) \n"
                 "\nEric BOUROFF [LinkedIn](https://www.linkedin.com/in/ericbouroff) \n")
-    st.write("\nThis web app was build as part of a data science bootcap at DataScientest, class of 2022 \n"
+    st.write("\nThis web app was build as part of a data science bootcamp at DataScientest, class of 2022 \n"
                 "\n Link of DataScientest website [https://datascientest.com/](https://datascientest.com/)")
 
