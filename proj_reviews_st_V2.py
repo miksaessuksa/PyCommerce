@@ -1158,6 +1158,6 @@ elif rad == "Project team":
                 "\nCeline HERNANDEZ [LinkedIn](https://www.linkedin.com/in/celinehernandez) \n"
                 "\nPierre KRAUS [LinkedIn](https://www.linkedin.com/in/pierrekraus) \n"
                 "\nEric BOUROFF [LinkedIn](https://www.linkedin.com/in/ericbouroff) \n")
-     st.write("\nThis web app was build as part of a data science bootcap at DataScientest, class of 2022 \n"
+    st.write("\nThis web app was build as part of a data science bootcap at DataScientest, class of 2022 \n"
                 "\n Link of DataScientest website [https://datascientest.com/](https://datascientest.com/)")
 
