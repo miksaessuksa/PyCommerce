@@ -670,7 +670,7 @@ elif rad == "Modeling":
     img = Image.open('modeling2.png')
     st.image(img, caption=None, width=None, use_column_width=None, clamp=False, channels="RGB", output_format="auto")
     st.write("As for the deep learning models we used a dense neural network including an embeddding layer, a MaxPooling layer and two dense layers. Only the reviews were used as inputs (Lemma).  \n"
-                "We also incorporated a **fastText** pre-trained model to create an embedding matrix so as to initialize the embedding layer. [FastText] (https://fasttext.cc/) is an open-source library, developed by the Facebook AI Research lab and has proven to be very efficient on many NLP problems, such as semantic similarity detection and text classification.")   
+                "We also incorporated a **fastText** pre-trained model to create an embedding matrix so as to initialize the embedding layer. [FastText](https://fasttext.cc/) is an open-source library, developed by the Facebook AI Research lab and has proven to be very efficient on many NLP problems, such as semantic similarity detection and text classification.")   
     
    
     
