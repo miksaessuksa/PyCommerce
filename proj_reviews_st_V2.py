@@ -550,11 +550,11 @@ elif rad == "Explorative Data Analysis":
     slctbox_status = st.selectbox("Select which category of comments to display the corresponding word cloud",['Positive', 'Negative', 'Neutral'])
     if (slctbox_status == 'Negative') :
         df1_fr_neg = df1_fr[df1_fr.rating == 0]
-        MyWordCloud(df1_fr_neg.No_stopwords_joined,title="Positive reviews Wordcloud\n\n", background='black')
+        MyWordCloud(df1_fr_neg.No_stopwords_joined,title="Negative reviews Wordcloud\n\n", background='black')
     
     elif (slctbox_status == 'Positive'):
         df1_fr_pos = df1_fr[df1_fr.rating == 1]
-        MyWordCloud(df1_fr_pos.No_stopwords_joined,title="Negative reviews Wordcloud\n\n",background='white')
+        MyWordCloud(df1_fr_pos.No_stopwords_joined,title="Positive reviews Wordcloud\n\n",background='white')
     
     elif (slctbox_status == 'Neutral'):
         df1_fr_neutral = df1_fr[df1_fr.star == 3]
