@@ -664,7 +664,7 @@ elif rad == "Modeling":
     st.subheader('Machine Learning and Deep Learning models')
     st.markdown("We predicted the sentiment (positive or negative) of reviews with 4 classification  models,  namely :  \n"
                 ">- [Gradient Boosting](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingClassifier.html)  \n"
-                ">- [CatBoosting](https://catboost.ai/en/docs/)  \n"
+                ">- [CatBoost](https://catboost.ai/en/docs/)  \n"
                 ">- [Logistic Regression](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html)  \n"
                 ">- [Support Vector Machine (SVM)](https://scikit-learn.org/stable/modules/svm.html?highlight=logistic+regression)  \n")
     img = Image.open('modeling2.png')
