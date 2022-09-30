@@ -81,7 +81,7 @@ if rad == "Project presentation":
     st.markdown  (">- **Trustpilot**: comments from internet users.")
     st.markdown("After analyzing customers' comments, our objective will be to categorize new product feedbacks using a **binary classification**")
     st.subheader('Steps')
-    st.markdown("In order to reach our goal, we will divide our project in four steps, based on a data science approach: "
+    st.markdown("In order to reach our goal, we will divide our project in four steps, based on a data science approach: ")
     st.markdown (">- **Exploratory Data Analysis (EDA)**: a mandatory step to comprehend and understand our database (descriptive data, correlation between variables, data cleaning, visualization graphs...) ")
     st.markdown (">- **Data preprocessing**: NLP methods require to transform raw data (comments) in usable and workable data (tokenization, stemming, regular expression...).")
     st.markdown  (">- **Modeling**: training machine learning and deep learning models and interpreting results.")
