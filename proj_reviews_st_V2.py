@@ -77,8 +77,8 @@ if rad == "Project presentation":
     st.markdown(" Data science methods such as **sentiment analysis**, allow businesses to extract values from customers' feedback. Identifying areas of improvement, strenghts, and product trends represent a strong advantage to plan out deadlines and optimize decision making.")
     st.markdown("Sentiment analysis is made possible by the use of **Natural Language Processing (NLP)** methods which allow machines to analyze and interpret human language.")
     st.markdown ("Throughout this project, we will analyze clients'feedback for the Trusted Shop website originating from two sources: "
-                 >- **Trusted Shop**: verified comments, meaning they result from a client order."
-                 >- **Trustpilot**: comments from internet users.")
+                 ">- **Trusted Shop**: verified comments, meaning they result from a client order."
+                 ">- **Trustpilot**: comments from internet users.")
     st.markdown("After analyzing customers' comments, our objective will be to categorize new product feedbacks using a **binary classification**")
     st.subheader('Steps')
     st.markdown("In order to reach our goal, we will divide our project in four steps, based on a data science approach: "
