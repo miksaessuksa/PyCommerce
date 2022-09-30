@@ -84,7 +84,7 @@ if rad == "Project presentation":
     st.markdown("In order to reach our goal, we will divide our project in four steps, based on a data science approach: "
                 ">- **Exploratory Data Analysis (EDA)**: a mandatory step to comprehend and understand our database (descriptive data, correlation between variables, data cleaning, visualization graphs...) "
                 ">- **Data preprocessing**: NLP methods require to transform raw data (comments) in usable and workable data (tokenization, stemming, regular expression...)."
-                ">- **Modeling**: training machine learning and deep learning models and interpreting results.")
+                ">- **Modeling**: training machine learning and deep learning models and interpreting results."
                 ">- **Evaluation**: testing the model(s) chosen upon selection criteria (interpretability & performances).")
 
 
