@@ -73,17 +73,17 @@ add_bg_from_local('pycommerce_bg.jpg')
 if rad == "Project presentation":
     st.header("PyCommerce Project")
     st.subheader('Context')
-    st.markdown("Nowadays, with the prevalence of costumer reviews and review platforms, it’s little surprising that they can play a crucial role in understanding the parameters that affects the performance of a business in the market. In order to stand out from competitors, it is crucial for e-commerce companies to understand clients' pain points.")
-    st.markdown(" Data sciences methods such as **sentiment analysis**, allow businesses to extract values from customers' feedback. Identifying areas of improvements, strenghts, and product trends represent a strong advantage to plan out deadlines and optimize decision making.")
-    st.markdown("Sentiment analysis is made possible by the use of **Natural Language Processing methods (NLP)** or which consists in understandingand manipulating natural language by the machines.")
+    st.markdown("Nowadays, with the prevalence of costumer reviews and review platforms, it’s little surprising that they can play a crucial role in understanding the parameters that affect the performance of a business in the market. In order to stand out from competitors, it is crucial for e-commerce companies to understand clients' pain points.")
+    st.markdown(" Data science methods such as **sentiment analysis**, allow businesses to extract values from customers' feedback. Identifying areas of improvement, strenghts, and product trends represent a strong advantage to plan out deadlines and optimize decision making.")
+    st.markdown("Sentiment analysis is made possible by the use of **Natural Language Processing (NLP)** methods which allow machines to analyze and interpret human language.")
     st.markdown ("Throughout this project, we will analyze clients'feedback for the Trusted Shop website originating from two sources: **Trusted Shop**: verified comments, meaning they result from a client order.**Trustpilot**: comments from internet users.")
-    st.markdown("After analyzing customers' comments, our objective will be to categorize new product feedback using a **binary classification**")
+    st.markdown("After analyzing customers' comments, our objective will be to categorize new product feedbacks using a **binary classification**")
     st.subheader('Steps')
-    st.markdown("In order to reach our goal, we will divide our project in four steps, based on a data siences approach: ")
-    st.markdown(">- **Exploratory Data Analysis (EDA)**: a mandatory step to comprehend and understand our datase (descriptive data, correlation between variables, data cleaning, visualization graphs...) ")
+    st.markdown("In order to reach our goal, we will divide our project in four steps, based on a data science approach: ")
+    st.markdown(">- **Exploratory Data Analysis (EDA)**: a mandatory step to comprehend and understand our database (descriptive data, correlation between variables, data cleaning, visualization graphs...) ")
     st.markdown(">- **Data preprocessing**: NLP methods require to transform raw data (comments) in usable and workable data (tokenization, stemming, regular expression...).")
     st.markdown(">- **Modeling**: training machine learning and deep learning models and interpreting results.")
-    st.markdown(">- **Evaluation**: test driving the model chosen upon selection criteria (interpretability & performances).")
+    st.markdown(">- **Evaluation**: testing the model(s) chosen upon selection criteria (interpretability & performances).")
 
 
 
@@ -111,7 +111,7 @@ elif rad == "Explorative Data Analysis":
                  ">- **reponse**: answer to customers'feedback, lots of missing values (%)  \n"
                  ">- **source**: the reviews have been collected from TrustedShop and TrustPilot  \n"
                  ">- **company**: the reviews refer to 2 e-commerce platforms (VeePee and ShowRoom)  \n"
-                 ">- **ville**: lots of missing values  \n"
+                 ">- **ville**: city, lots of missing values  \n"
                  ">- **date_commande**: order date, lots of missing values  \n"
                  ">- **ecart**: day interval between customer's order and feedback, lots of missing values  \n"
                  ">- **maj**: delivery date  \n")
@@ -124,7 +124,7 @@ elif rad == "Explorative Data Analysis":
     #Check for duplicates:
     nb_duplicates=df.duplicated().sum()
     st.markdown("The dataset includes 427 duplicates, that will be removed so as to only keep unique entries.  \n"
-                "It also includes 80 446 missing values. We will remove the columns with a large amount of missing values (more than 45 %:client,reponse,ville,maj, date_commande, ecart) that cannot be used for the analysis, and we will drop the few remaining rows with missing values.  \n"
+                "It also includes 80 446 missing values. We will remove the columns with a large amount of missing values (more than 45%:client,reponse,ville,maj, date_commande, ecart) that cannot be used for the analysis, and we will drop the few remaining rows with missing values.  \n"
                 "We also noticed few reviews in other languages while exploring the dataset and are going to check for the number of non-french reviews by using the language detection library langdetect (99% over precision for 49 languages, developed by Shuyo Nakatani).")
     status_1 = st.radio("Select the variable you want to display: ", ('None','Duplicates', 'Missing values'))
     if status_1=='None':
@@ -492,7 +492,7 @@ elif rad == "Explorative Data Analysis":
         st.markdown('##### Ratings count per quarter')
         st.plotly_chart(fig,use_container_width=True)
         
-        st.markdown("The count of 1 star reviews is quite homogenous all along the year while the rest of the reviews have been mainly recorded during the summer : June, July, August (Fig. ).  \n"  
+        st.markdown("The count of 1 star reviews is quite homogenous all along the year while the rest of the reviews have been mainly recorded during the summer : June, July, August.  \n"  
                     "Interestingly, we notice a drastic increase in feedback recorded during 2020 (together with an increase in high-rated reviews compared to the previous years), with a decrease in 2021.  \n\n")  
     st.markdown( "Considering the difficulty to identify specific vocabulary to distinguish between ratings varying by only 1 star, we simplified the rating system by pooling the reviews having a negative tone (1, 2 and 3 star ratings replaced by 0) and reviews having a positive tone (4 and 5 stars ratings replaced by 1). The prediction problem is now reduced to a binary classification and the new rating distribution is now more balanced with 44.8% of negative reviews versus 55.2% of positive reviews")
     
@@ -514,12 +514,12 @@ elif rad == "Explorative Data Analysis":
 
 #SENTIMENT ANALYSIS    
     st.markdown("### Sentiment analysis")
-    st.markdown("Let's go further into the comments and identify the most redundant key words to have a first flavour of the general sentiment. For this purpose we will use mainly **NLTK** and **Spacy** libraries. \n")
-    st.markdown("With help of these librairies, we went through several manipualtion as tokenization, lemmatization, POS tagging, etc...")  
+    st.markdown("Let's analyze further the comments and identify the most redundant keywords to have a first flavour of the general sentiment. For this purpose we will use mainly **NLTK** and **Spacy** libraries. \n")
+    st.markdown("With help of these librairies, we went through several text processing such as tokenization, lemmatization, POS tagging, etc...")  
     if st.button('Click here if you want to discover the full cleaning process we went through'):
         st.image('text_processing.jpg')
     
-    st.markdown('The first result of this sentiment analysisis is given by the word cloud below.')    
+    st.markdown('The first result of this sentiment analysis is given by the Wordcloud below.')    
     
     df1_fr = pd.read_csv('df_text_V6neg_joined.csv',index_col=0)
    
@@ -547,7 +547,7 @@ elif rad == "Explorative Data Analysis":
     
     st.markdown("---") 
     st.markdown("***Word Cloud Visualization for each category of comments***")
-    slctbox_status = st.selectbox("Select which category of comments to display the corresponding word cloud",['Positive', 'Negative', 'Neutral'])
+    slctbox_status = st.selectbox("Select a category of comments to display the corresponding WordCloud",['Positive', 'Negative', 'Neutral'])
     if (slctbox_status == 'Negative') :
         df1_fr_neg = df1_fr[df1_fr.rating == 0]
         MyWordCloud(df1_fr_neg.No_stopwords_joined,title="Negative reviews Wordcloud\n\n", background='black')
@@ -561,10 +561,10 @@ elif rad == "Explorative Data Analysis":
         MyWordCloud(df1_fr_neutral.No_stopwords_joined,title="Neutral reviews Wordcloud\n\n",background='lightgray')
     
     st.markdown("---")     
-    st.markdown("""As expected, the WordCloud displaying most frequent words related to neutral reviews (star=3) combined words with 
-                both positive and negative connotations, which renders difficult to identify neutral specific words.""")
+    st.markdown("""As expected, the WordCloud displaying the most frequent words related to neutral reviews (star=3) combines words with 
+                both positive and negative connotations, which renders difficult the identification of specific neutral words.""")
     st.markdown("""To further the analysis, we took advantage of tools provided by **Sklearn** and **Collections** not only to make easier the identification of 
-                the most frequent words per sentiment, but also to aim at determining words that are specific to each sentiment. The 
+                the most frequent words per sentiment (positive or negative), but also to aim at determining words that are specific to each sentiment. The 
                 use of Part-of-speech (POS) tagging allowed us to refine our analysis to single out specifically nouns, adjectives, verbs and adverbs
                 associated with a sentiment.""")
     st.markdown("""You can see below the results of this analysis.""")
@@ -638,9 +638,9 @@ elif rad == "Data processing":
     st.header('Data processing')
     st.subheader('Features selection')
     st.markdown("Since the text preprocessing is an essential step in building an efficient machine learning model, we tried to identify features that connotate a sentiment and are usually removed during the process but could improve the algorithm performance.  \n"
-                "In addition to the number of words and sentences that correlated significantly with the ratings, we counted **punctuations** (exclamation and interrogation marks and ellipsis), **capslocks**, and **negative words** (ne,pas,ni,jamais,aucune,aucun,rien,sans,plus,n') and then try to identify any strong correlation between all the features and the rating.  \n"
+                "In addition to the number of words and sentences that correlated significantly with the ratings, we counted **punctuations** (exclamation and interrogation marks and ellipsis), **capslocks**, and **negative words** (ne,pas,ni,jamais,aucune,aucun,rien,sans,plus,n') and then try to identify any strong correlation between all these features and the ratings.  \n"
                 "Categorical features were dummy-encoded and numerical features were normalized using MinMaxScaler.  \n"
-                "We kept only features displaying higher correlation with the target feature rating.")
+                "We kept only features displaying higher correlation with the target feature 'rating'.")
     if st.button('Click if you want to see the features correlation heatmap'):
         img = Image.open('feats_heatmap.png')
         st.image(img, caption=None, width=None, use_column_width=None, clamp=False, channels="RGB", output_format="auto")
@@ -1105,7 +1105,7 @@ elif rad == "Conclusion & Perspectives":
         st.pyplot(fig)
     st.markdown("In  this  project,  we  compared 4 supervised machine learning approaches :  Gradient Boosting, CatBoosting, SVM and Logistic Regression and 2 deep learning models. Reviews were preprocesssed and prepared using  various  NLP  techniques  including  stopwords  removal,  word lemmatization,  TF-IDF  vectorization and word embedding.  \n"
                 "Our  experimental  approaches  studied  the accuracy,  precision,  recall,  and  F1  score , focusing on the precision metrics so as to minimize the false positives."
-                "Overall,  all  our  models  were  able  to  classify  negative  and  positive  reviews  with good  accuracy  and  precision (minimum of 86%) with SVC outperforming the other classifiers, including the Dense Neural Networks models with scoring metrics reaching 90% (accuracy, precision recall and f1-score). However, we were able to reach a precision of 93% using a fastText classifier (preliminary data). Fasttext using shallow neural network, we might be able to improve our deep learning models performance by opting for a simpler architecture.  \n"
+                "Overall,  all  our  models  were  able  to  classify  negative  and  positive  reviews  with good  accuracy  and  precision (minimum of 86%), with SVC outperforming the other classifiers, including the Dense Neural Networks models with scoring metrics reaching 90% (accuracy, precision recall and f1-score). However, we were able to reach a precision of 93% using a fastText classifier (preliminary data). Fasttext using shallow neural network, we might be able to improve our deep learning models performance by opting for a simpler architecture.  \n"
                 "There are few other options that we have not tried, since lots of NLP tools are dedicated to the English language. Among them, CamemBERT, whish is state-of-the-art language model for French based on RoBERTa architecture.  \n"
                 "All supervised machine learning algorithms  performed  better  in  term  of classifying positive sentiment, with systematically lower precision and F1-scores for the negative class. This might be due to the reduced proportion  of  negative reviews  or the fact we included the 3-star reviews in the negative class, which could slighltly skew the distinction between negative and positive sentiment.  \n"
                 "Future work would focus on optimizing our models for a multiclass classification problem so as to predict more accurately the star rating (4 classes by removing the 3-star/'neutral' rating class).")    
@@ -1115,7 +1115,7 @@ elif rad == "Conclusion & Perspectives":
                 "As a consequence this would help the company to engage concrete action plan internally that would improve its operational efficiency, and in-fine its digital reputation."
                 "In this report we already tried to serve this purpose in different ways, notably:  \n"
                 ">- our work with the reviews POStagging showed that we can retrieve easily features that would allow us not only to identify more precisely customers'pain points, but also to study their seasonal and yearly trends/changes.  \n"
-                ">- In a different approach, we also initated a mapping defining all main categories and sub-categories using Graph Theory and NetworkX library. This first exercice showed us that the analysis of the community and relationship between each other could be also an interesting insight.(Is there issue common to other categories? To re-phrase it from the opposite angle: 'If we solve this issue, this will tackle two problems in one').  \n"
+                ">- In a different approach, we also initated a mapping defining all main categories and sub-categories using Graph Theory and NetworkX library. This first exercice showed us that the analysis of the community and relationship between each other could be also an interesting insight (Is there an issue common to other categories? To re-phrase it from the opposite angle: 'If we solved this issue, would we be able to tackle two problems in one ?').  \n"
                 ">- Finally we focused on the reviews written in French as they represented more than 89% of our dataset, it would be interesting to collect more reviews that are in the top 5 languages.  \n"
                 "In a nutshell, this project is just the beginning of a bigger AI application and, with further development effort, could spark off the interest of retail companies.")
     
