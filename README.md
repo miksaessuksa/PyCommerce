@@ -15,5 +15,5 @@ tracking evolution per region of good/bad comments for each of these main catego
 As a consequence this would help the company to engage concrete action plan internally that would improve its operational efficiency, and in-fine its digital reputation.
 In this report we already tried to serve this purpose in different ways, notably:
 
-our work with the reviews POStagging showed that we can retrieve easily features that would allow us not only to identify more precisely customers'pain points, but also to investigate their seasonal and yearly trends/changes.
-In a different approach, we also initated a mapping defining all main categories and sub-categories using Graph Theory and NetworkX library. 
+>-our work with the reviews POStagging showed that we can retrieve easily features that would allow us not only to identify more precisely customers'pain points, but also to investigate their seasonal and yearly trends/changes.
+>-In a different approach, we also initated a mapping defining all main categories and sub-categories using Graph Theory and NetworkX library. 
