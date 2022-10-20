@@ -4,6 +4,8 @@
 In order to stand out from competitors, it is crucial for e-commerce companies to understand clients' pain points. Data sciences methods such as **sentiment analysis**, allow businesses to extract values from customers' feedback. Identifying areas of improvements, strenghts, and product trends represent a strong advantage to plan out deadlines and optimize decision making.
 Sentiment analysis is made possible by the use of **Natural Language Processing** methods (NLP) or which consists in **understanding** and **manipulating** natural language by the machines.
 
+#### Strategy
+
 Throughout this project, we analyzed clients' feedback for the **Trusted Shop** website originating from two sources: 
 >- **Trusted Shop**: verified comments, meaning they result from a client order.
 >- **Trustpilot**: comments from internet users.
