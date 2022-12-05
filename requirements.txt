@@ -7,7 +7,7 @@ datetime
 scikit-plot
 joblib
 scipy
-sklearn
+scikit-learn
 networkx
 wordcloud
 pyvis
